@@ -115,16 +115,13 @@
   .footer b { color:var(--gold-dim); font-weight:600; }
 
   /* ---------- 来电界面 ---------- */
-  .call { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:space-between; padding:168px 28px 60px; text-align:center; background:radial-gradient(600px 400px at 50% 18%, #1A2A48 0%, #0B1220 55%, #070D18 100%); }
+  .call { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(150px + env(safe-area-inset-top, 0px)) 28px calc(60px + env(safe-area-inset-bottom, 0px)); text-align:center; background:radial-gradient(600px 400px at 50% 18%, #1A2A48 0%, #0B1220 55%, #070D18 100%); }
   .call.show { display:flex; }
-  .avatar { width:108px; height:108px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle, #EBC97A 0%, #B8892F 100%); box-shadow:0 0 0 8px rgba(212,169,78,.12), 0 0 46px rgba(212,169,78,.5); animation:avatarPulse 1.8s ease-in-out infinite; }
-  .avatar svg { width:52px; height:52px; }
-  @keyframes avatarPulse { 0%,100%{ transform:scale(1); box-shadow:0 0 0 8px rgba(212,169,78,.12),0 0 40px rgba(212,169,78,.45);} 50%{ transform:scale(1.06); box-shadow:0 0 0 12px rgba(212,169,78,.18),0 0 60px rgba(212,169,78,.6);} }
-  .call-title { font-size:27px; font-weight:700; letter-spacing:.5px; margin-top:6px; }
+  .call-title { font-size:31px; font-weight:700; letter-spacing:1px; margin-top:0; }
   .call-title .tag-buy { color:var(--buy); } .call-title .tag-sell { color:var(--sell); }
-  .call-detail { font-size:14px; color:var(--text2); margin-top:10px; line-height:1.7; max-width:300px; }
+  .call-detail { font-size:15px; color:var(--text2); margin-top:14px; line-height:1.8; max-width:300px; }
   .call-detail b { color:var(--text); font-weight:600; }
-  .call-from { font-size:12px; color:var(--faint); margin-top:8px; }
+  .call-from { font-size:12px; color:var(--faint); margin-top:10px; }
   .call-btns { display:flex; gap:24px; align-items:center; justify-content:center; }
   .call-btn { width:120px; height:58px; border-radius:29px; border:none; color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; line-height:1; transition:transform .08s; }
   .call-btn:active { transform:scale(.95); }
@@ -232,9 +229,6 @@
     <!-- ============ 来电强提醒 ============ -->
     <div class="call" id="screenCall">
       <div>
-        <div class="avatar">
-          <svg viewBox="0 0 24 24"><path fill="#1A1405" d="M9.5,2.5 L14.5,2.5 L14.5,8 Q14.5,9 13.5,9 L10.5,9 Q9.5,9 9.5,8 Z"/><path fill="#1A1405" d="M9,9 L15,9 L15,17.5 Q15,20 12.5,20.5 L11.5,20.5 Q9,20 9,17.5 Z"/><path fill="#3A2A08" d="M9,17.5 Q9,20 11.5,20.5 L12.5,20.5 Q15,20 15,17.5 L14.2,17.5 Q14.2,19.2 12.5,19.6 L11.5,19.6 Q9.8,19.2 9.8,17.5 Z"/></svg>
-        </div>
         <div class="call-title"><span class="tag-buy" id="callTag">买入提醒</span></div>
         <div class="call-detail" id="callDetail">现在是最佳买入时段（07:00–08:00）<br>适合上线扫<b>低价子弹</b></div>
         <div class="call-from">来自 三角洲子弹提醒 · devlan</div>
