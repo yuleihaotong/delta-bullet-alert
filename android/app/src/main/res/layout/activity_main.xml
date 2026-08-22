@@ -253,53 +253,168 @@
                 android:text="测试提醒" />
         </LinearLayout>
 
-        <!-- ============ 自选子弹（可折叠） ============ -->
-        <LinearLayout
-            android:id="@+id/sectionHeader"
+        <!-- ============ 自选子弹：搜索 + 排序 + 分组 ============ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/ibm_plex_sans_semibold"
+            android:text="自选子弹（价格=每发单价）"
+            android:textColor="?attr/appTextPrimary"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/searchBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="20dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:hint="搜索子弹（模糊，如 556 / m855 / 9x39）"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="9dp"
+            android:textColor="?attr/appTextPrimary"
+            android:textColorHint="?attr/appFaint"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingVertical="6dp">
+            android:paddingHorizontal="16dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/ibm_plex_sans_semibold"
-                android:text="自选子弹（价格=每发单价）"
-                android:textColor="?attr/appTextPrimary"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/bulletCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:text="0 种"
+                android:text="排序"
                 android:textColor="?attr/appFaint"
                 android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/sectionArrow"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:contentDescription="折叠或展开子弹列表"
-                android:src="@drawable/ic_chevron" />
+            <TextView
+                android:id="@+id/sortDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_pill_sel"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="默认"
+                android:textColor="?attr/appOnPrimary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/sortPriceAsc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="价格↑"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/sortPriceDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="价格↓"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/sortGrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="品质"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/sortReturn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="收益率"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分组"
+                android:textColor="?attr/appFaint"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/groupCaliber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_pill_sel"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:text="按口径"
+                android:textColor="?attr/appOnPrimary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/groupGrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:text="按品质"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bulletCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:text="共 0 种"
+            android:textColor="?attr/appFaint"
+            android:textSize="12sp" />
 
         <LinearLayout
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp" />
+            android:orientation="vertical" />
 
         <!-- ============ 设置 ============ -->
         <TextView

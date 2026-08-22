@@ -11,10 +11,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.LinearLayout
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.CheckBox
@@ -30,6 +33,7 @@ import com.deltaforce.alert.data.HourModel
 import com.deltaforce.alert.data.WatchItem
 import com.deltaforce.alert.data.WatchlistStore
 import com.deltaforce.alert.databinding.ActivityMainBinding
+import com.deltaforce.alert.databinding.GroupHeaderBinding
 import com.deltaforce.alert.databinding.ItemBulletBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     private val store by lazy { WatchlistStore.get(this) }
     private var bullets: List<BulletPrice> = emptyList()
     private val hourlyModel: List<HourModel> by lazy { loadHourlyModel() }
+    private val gradeMap: Map<String, Int> by lazy { loadGradeMap() }
+    private val collapsedGroups = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +80,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener { saveSettings(); Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show() }
 
         setupThemeSpinner()
-        setupCollapsibleList()
+        setupSearch()
+        setupSortChips()
+        setupGroupToggle()
         ensureRefMeans()
         loadSettings()
         updateMonitorUi()
@@ -101,38 +109,173 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 渲染自选子弹列表（LinearLayout，随外层 ScrollView 一起滚动） */
+    /** 渲染子弹列表：搜索过滤 → 排序 → 分组（口径/品质）→ 组内可折叠 */
     private fun renderList() {
         binding.list.removeAllViews()
         val refs = store.getRefMeans()
-        for (p in bullets) {
-            val b = ItemBulletBinding.inflate(layoutInflater, binding.list, false)
-            b.name.text = p.name
-            b.price.text = p.price.toString()
-            val dev = refs[p.name]?.let { r -> if (r > 0) (p.price - r) / r else null }
-            b.dev.text = if (dev != null) "%.1f%%".format(dev * 100) else "--"
-            val chipBg: Int
-            val chipColorAttr: Int
-            when {
-                dev == null -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
-                dev <= -0.03 -> { chipBg = R.drawable.bg_chip_buy; chipColorAttr = R.attr.appBuy }
-                dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColorAttr = R.attr.appSell }
-                else -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
-            }
-            b.dev.background = ContextCompat.getDrawable(this, chipBg)
-            b.dev.setTextColor(attrColor(chipColorAttr))
-            val watched = store.isWatched(p.name)
-            b.watch.setOnCheckedChangeListener(null)
-            b.watch.isChecked = watched
-            b.watch.setOnCheckedChangeListener { _, checked ->
-                store.toggleWatch(
-                    WatchItem(name = p.name, buyDev = store.buyDevInput, sellDev = store.sellDevInput),
-                    checked
-                )
-            }
-            binding.list.addView(b.root)
+        val watchedNames = store.getWatched().map { it.name }.toSet()
+        val query = binding.searchBox.text.toString().trim()
+
+        var filtered = bullets.filter { it.name.contains(query, ignoreCase = true) }
+        binding.bulletCount.text = if (query.isNotEmpty()) {
+            "找到 ${filtered.size} 种（${query}）"
+        } else {
+            "共 ${bullets.size} 种 · 监控 ${watchedNames.size} 种"
         }
-        binding.bulletCount.text = "共 ${bullets.size} 种 · 监控 ${store.getWatched().size} 种"
+
+        filtered = when (store.sortMode) {
+            "price_asc" -> filtered.sortedBy { it.price }
+            "price_desc" -> filtered.sortedByDescending { it.price }
+            "grade" -> filtered.sortedWith(compareByDescending<BulletPrice> { gradeOf(it.name) }.thenByDescending { it.price })
+            "return" -> filtered.sortedWith(compareBy<BulletPrice> {
+                val r = refs[it.name]; if (r != null && r > 0) (it.price - r) / r else Double.MAX_VALUE
+            })
+            else -> filtered
+        }
+
+        val groups: List<Pair<String, List<BulletPrice>>> = if (store.groupByMode == "grade") {
+            filtered.groupBy { "Lv.${gradeOf(it.name)} 弹" }.toList()
+                .sortedWith(compareByDescending<Pair<String, List<BulletPrice>>> { it.first })
+        } else {
+            filtered.groupBy { caliberOf(it.name) }.toList().sortedBy { it.first }
+        }
+
+        for ((gname, gitems) in groups) {
+            val gh = GroupHeaderBinding.inflate(layoutInflater, binding.list, false)
+            gh.groupName.text = gname
+            gh.groupCount.text = "${gitems.size} 种"
+            val collapsed = collapsedGroups.contains(gname)
+            gh.groupArrow.rotation = if (collapsed) 180f else 0f
+
+            val container = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                visibility = if (collapsed) View.GONE else View.VISIBLE
+            }
+            for (p in gitems) container.addView(buildBulletRow(p, refs, watchedNames))
+
+            gh.root.setOnClickListener {
+                val nowCollapsed = !collapsedGroups.contains(gname)
+                if (nowCollapsed) collapsedGroups.add(gname) else collapsedGroups.remove(gname)
+                container.visibility = if (nowCollapsed) View.GONE else View.VISIBLE
+                gh.groupArrow.animate().rotation(if (nowCollapsed) 180f else 0f).setDuration(180).start()
+            }
+            binding.list.addView(gh.root)
+            binding.list.addView(container)
+        }
+    }
+
+    private fun buildBulletRow(
+        p: BulletPrice,
+        refs: Map<String, Double>,
+        watchedNames: Set<String>
+    ): View {
+        val b = ItemBulletBinding.inflate(layoutInflater, null, false)
+        b.name.text = p.name
+        b.price.text = p.price.toString()
+        val dev = refs[p.name]?.let { r -> if (r > 0) (p.price - r) / r else null }
+        b.dev.text = if (dev != null) "%.1f%%".format(dev * 100) else "--"
+        val chipBg: Int
+        val chipColorAttr: Int
+        when {
+            dev == null -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
+            dev <= -0.03 -> { chipBg = R.drawable.bg_chip_buy; chipColorAttr = R.attr.appBuy }
+            dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColorAttr = R.attr.appSell }
+            else -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
+        }
+        b.dev.background = ContextCompat.getDrawable(this, chipBg)
+        b.dev.setTextColor(attrColor(chipColorAttr))
+        val watched = watchedNames.contains(p.name)
+        b.watch.setOnCheckedChangeListener(null)
+        b.watch.isChecked = watched
+        b.watch.setOnCheckedChangeListener { _, checked ->
+            store.toggleWatch(
+                WatchItem(name = p.name, buyDev = store.buyDevInput, sellDev = store.sellDevInput),
+                checked
+            )
+        }
+        return b.root
+    }
+
+    /** 提取口径：如 5.56x45mm / 7.62x54R / 12 Gauge / .45 ACP / 箭矢 */
+    private fun caliberOf(name: String): String {
+        if (name.contains("箭矢")) return "箭矢"
+        val clean = name.removePrefix("金").removePrefix("紫").removePrefix("蓝")
+        val m = Regex(
+            """^([0-9]+(?:\.[0-9]+)?(?:mm)?x[0-9]+[A-Za-z]*|\.[0-9]+[A-Za-z]+|\.[0-9]+ [A-Za-z]+|[0-9]+ Gauge|45-70 Govt)"""
+        ).find(clean)
+        return m?.value ?: clean.substringBefore(" ").ifEmpty { name }
+    }
+
+    private fun gradeOf(name: String): Int = gradeMap[name] ?: 1
+
+    private fun loadGradeMap(): Map<String, Int> {
+        return try {
+            val json = assets.open("grade_map.json").bufferedReader().use { it.readText() }
+            val o = JSONObject(json)
+            o.keys().asSequence().associateWith { o.optInt(it) }
+        } catch (_: Exception) {
+            emptyMap()
+        }
+    }
+
+    private fun setupSearch() {
+        binding.searchBox.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) { renderList() }
+        })
+    }
+
+    private fun setupSortChips() {
+        val map = listOf(
+            binding.sortDefault to "default",
+            binding.sortPriceAsc to "price_asc",
+            binding.sortPriceDesc to "price_desc",
+            binding.sortGrade to "grade",
+            binding.sortReturn to "return",
+        )
+        for ((pill, mode) in map) {
+            pill.setOnClickListener {
+                store.sortMode = mode
+                refreshSortPills()
+                renderList()
+            }
+        }
+        refreshSortPills()
+    }
+
+    private fun refreshSortPills() {
+        fun set(v: TextView, sel: Boolean) {
+            v.background = ContextCompat.getDrawable(this, if (sel) R.drawable.bg_pill_sel else R.drawable.bg_pill)
+            v.setTextColor(attrColor(if (sel) R.attr.appOnPrimary else R.attr.appTextSecondary))
+        }
+        set(binding.sortDefault, store.sortMode == "default")
+        set(binding.sortPriceAsc, store.sortMode == "price_asc")
+        set(binding.sortPriceDesc, store.sortMode == "price_desc")
+        set(binding.sortGrade, store.sortMode == "grade")
+        set(binding.sortReturn, store.sortMode == "return")
+    }
+
+    private fun setupGroupToggle() {
+        binding.groupCaliber.setOnClickListener {
+            store.groupByMode = "caliber"
+            refreshGroupPills()
+            renderList()
+        }
+        binding.groupGrade.setOnClickListener {
+            store.groupByMode = "grade"
+            refreshGroupPills()
+            renderList()
+        }
+        refreshGroupPills()
+    }
+
+    private fun refreshGroupPills() {
+        val caliber = store.groupByMode == "caliber"
+        binding.groupCaliber.background = ContextCompat.getDrawable(this, if (caliber) R.drawable.bg_pill_sel else R.drawable.bg_pill)
+        binding.groupCaliber.setTextColor(attrColor(if (caliber) R.attr.appOnPrimary else R.attr.appTextSecondary))
+        binding.groupGrade.background = ContextCompat.getDrawable(this, if (!caliber) R.drawable.bg_pill_sel else R.drawable.bg_pill)
+        binding.groupGrade.setTextColor(attrColor(if (!caliber) R.attr.appOnPrimary else R.attr.appTextSecondary))
     }
 
     override fun onResume() {
@@ -160,17 +303,6 @@ class MainActivity : AppCompatActivity() {
         return "%02d:%02d".format(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
     }
 
-    /** 自选子弹列表折叠/展开 */
-    private fun setupCollapsibleList() {
-        binding.list.visibility = if (store.listCollapsed) View.GONE else View.VISIBLE
-        binding.sectionArrow.rotation = if (store.listCollapsed) 180f else 0f
-        binding.sectionHeader.setOnClickListener {
-            val collapsed = !store.listCollapsed
-            store.listCollapsed = collapsed
-            binding.list.visibility = if (collapsed) View.GONE else View.VISIBLE
-            binding.sectionArrow.animate().rotation(if (collapsed) 180f else 0f).setDuration(180).start()
-        }
-    }
 
     private fun refreshPrices() {
         binding.status.text = "刷新中…"

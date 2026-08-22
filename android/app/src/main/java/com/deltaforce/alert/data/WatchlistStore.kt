@@ -48,6 +48,12 @@ class WatchlistStore private constructor(ctx: Context) {
     var listCollapsed: Boolean
         get() = sp.getBoolean("list_collapsed", false)
         set(v) = sp.edit().putBoolean("list_collapsed", v).apply()
+    var groupByMode: String
+        get() = sp.getString("group_by", "caliber") ?: "caliber"
+        set(v) = sp.edit().putString("group_by", v).apply()
+    var sortMode: String
+        get() = sp.getString("sort_mode", "default") ?: "default"
+        set(v) = sp.edit().putString("sort_mode", v).apply()
 
     // ---------------- 自选子弹 ----------------
     private fun watchKey(): String = "watched"
