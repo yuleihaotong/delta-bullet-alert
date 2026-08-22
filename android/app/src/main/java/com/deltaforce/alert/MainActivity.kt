@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.util.Calendar
+import java.util.TimeZone
 
 class MainActivity : AppCompatActivity() {
 
@@ -130,6 +131,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // 监控服务可能在后台更新了行情缓存 → 回到界面时用最新数据重渲染
+        if (store.monitoring) {
+            val cached = store.cachedPrices()
+            if (cached.isNotEmpty()) {
+                bullets = cached
+                renderList()
+                updateStatusFromCache(cached)
+            }
+        }
+        updateMonitorUi()
+    }
+
+    private fun updateStatusFromCache(prices: List<BulletPrice>) {
+        val t = beijingTime(prices.firstOrNull()?.updatedAtMs)
+        binding.status.text = "监控数据 ${prices.size} 种子弹 · 行情更新 $t（北京）"
+    }
+
+    private fun beijingTime(ms: Long?): String {
+        if (ms == null || ms <= 0) return "--:--"
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai")).apply { timeInMillis = ms }
+        return "%02d:%02d".format(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
+    }
+
     private fun refreshPrices() {
         binding.status.text = "刷新中…"
         CoroutineScope(Dispatchers.Main).launch {
@@ -137,12 +163,18 @@ class MainActivity : AppCompatActivity() {
                 bullets = withContext(Dispatchers.IO) { com.deltaforce.alert.data.PriceApi.fetchCurrentPrices() }
                 store.cachePrices(bullets)
                 renderList()
-                val t = Calendar.getInstance()
-                binding.status.text = "已更新 ${bullets.size} 种子弹 · ${"%02d:%02d".format(t.get(Calendar.HOUR_OF_DAY), t.get(Calendar.MINUTE))}"
+                val t = beijingTime(bullets.firstOrNull()?.updatedAtMs)
+                binding.status.text = "已更新 ${bullets.size} 种子弹 · 行情更新 $t（北京）· 每发单价"
             } catch (e: Exception) {
                 bullets = store.cachedPrices()
                 renderList()
-                binding.status.text = "刷新失败（${e.message ?: "网络错误"}），显示上次缓存"
+                val cached = bullets.firstOrNull()?.updatedAtMs
+                val t = beijingTime(cached)
+                binding.status.text = if (cached != null && cached > 0) {
+                    "刷新失败（${e.message ?: "网络错误"}）· 显示缓存数据（行情 $t）"
+                } else {
+                    "刷新失败（${e.message ?: "网络错误"}）· 无缓存数据"
+                }
             }
         }
     }

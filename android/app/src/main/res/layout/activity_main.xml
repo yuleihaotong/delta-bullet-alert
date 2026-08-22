@@ -260,7 +260,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/ibm_plex_sans_semibold"
-            android:text="自选子弹"
+            android:text="自选子弹（价格=每发单价）"
             android:textColor="?attr/appTextPrimary"
             android:textSize="14sp" />
 
