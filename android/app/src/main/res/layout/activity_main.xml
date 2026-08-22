@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hourInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="尚未刷新"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnRefresh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="刷新行情" />
+
+            <Button
+                android:id="@+id/btnStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开始监控" />
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="停止" />
+
+            <Button
+                android:id="@+id/btnTest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="测试提醒" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="自选子弹（勾选监控）："
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="360dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="设置"
+            android:textStyle="bold" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            >
+
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="买入提醒时段(时)" />
+                <EditText
+                    android:id="@+id/etBuyHour"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="7" />
+            </TableRow>
+
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="卖出提醒时段(时)" />
+                <EditText
+                    android:id="@+id/etSellHour"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="16" />
+            </TableRow>
+
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="买入触发偏离% (≤)" />
+                <EditText
+                    android:id="@+id/etBuyDev"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:hint="-3" />
+            </TableRow>
+
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="卖出触发偏离% (≥)" />
+                <EditText
+                    android:id="@+id/etSellDev"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:hint="6" />
+            </TableRow>
+
+            <TableRow>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="轮询间隔(秒)" />
+                <EditText
+                    android:id="@+id/etPoll"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="30" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="保存设置" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="提示：Android 14 需在「通知-全屏通知」允许本应用；12+ 允许精确闹钟。提醒到点或价格触发时会全屏响铃（类似 QQ 通话）。"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

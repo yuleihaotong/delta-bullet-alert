@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#101418"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/callAvatar"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/bg_avatar"
+        android:gravity="center"
+        android:text="🔫"
+        android:textSize="44sp" />
+
+    <TextView
+        android:id="@+id/callTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="交易提醒"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/callDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textColor="#B0B8C0"
+        android:textSize="15sp"
+        android:text="触发提醒内容" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnAnswer"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="#1B8A5A"
+            android:text="接听"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnDecline"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:backgroundTint="#B0342E"
+            android:text="挂断"
+            android:textSize="18sp" />
+    </LinearLayout>
+</LinearLayout>
