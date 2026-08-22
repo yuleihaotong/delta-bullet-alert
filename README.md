@@ -52,6 +52,23 @@ gradle assembleDebug          # 产物: app/build/outputs/apk/debug/app-debug.ap
    同时每天按设定时段（默认 07:00 买入、16:00 卖出）发强提醒。
 5. "测试提醒"可预览 QQ 通话式响铃效果。
 
+## 发布（盈利分发，打包版不开源）
+
+```bash
+# 1. 生成你自己的签名密钥（一次性，务必妥善保管，勿提交仓库）
+keytool -genkeypair -v -keystore ~/release.keystore -alias delta -keyalg RSA -keysize 2048 -validity 3650
+
+# 2. 在 android/app/build.gradle 的 buildTypes.release 中配置 signingConfig 指向该密钥
+
+# 3. 打包 release
+cd android
+~/android-build/gradle-8.7/bin/gradle assembleRelease
+# 产物: app/build/outputs/apk/release/app-release.apk
+```
+
+- 仓库只含源码，**不发布 APK**；APK 走你的分发渠道（网盘/闲鱼/QQ 群），凭激活码解锁高级功能。
+- 高级功能（多子弹批量、自定义铃声、去广告、走势图等）用独立模块实现，不入库。
+
 ## 开源与授权
 
 - 源码：**Apache-2.0**（见 `LICENSE`）。
