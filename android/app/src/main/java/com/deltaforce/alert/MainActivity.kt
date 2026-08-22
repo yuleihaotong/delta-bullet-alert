@@ -14,6 +14,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(ThemeIndex.styleOf(store.themeIndex))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -68,11 +71,30 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnSave.setOnClickListener { saveSettings(); Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show() }
 
+        setupThemeSpinner()
         loadSettings()
         updateMonitorUi()
         showCurrentHour()
         ensurePermissions()
         refreshPrices()
+    }
+
+    private fun setupThemeSpinner() {
+        val themes = resources.getStringArray(R.array.themes)
+        binding.themeSpinner.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item, themes
+        )
+        binding.themeSpinner.setSelection(store.themeIndex)
+        binding.themeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                if (store.themeIndex != pos) {
+                    store.themeIndex = pos
+                    recreate()
+                }
+            }
+
+            override fun onNothingSelected(p: AdapterView<*>?) {}
+        }
     }
 
     /** 渲染自选子弹列表（LinearLayout，随外层 ScrollView 一起滚动） */
@@ -86,15 +108,15 @@ class MainActivity : AppCompatActivity() {
             val dev = refs[p.name]?.let { r -> if (r > 0) (p.price - r) / r else null }
             b.dev.text = if (dev != null) "%.1f%%".format(dev * 100) else "--"
             val chipBg: Int
-            val chipColor: Int
+            val chipColorAttr: Int
             when {
-                dev == null -> { chipBg = R.drawable.bg_chip_normal; chipColor = R.color.text_secondary }
-                dev <= -0.03 -> { chipBg = R.drawable.bg_chip_buy; chipColor = R.color.buy }
-                dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColor = R.color.sell }
-                else -> { chipBg = R.drawable.bg_chip_normal; chipColor = R.color.text_secondary }
+                dev == null -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
+                dev <= -0.03 -> { chipBg = R.drawable.bg_chip_buy; chipColorAttr = R.attr.appBuy }
+                dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColorAttr = R.attr.appSell }
+                else -> { chipBg = R.drawable.bg_chip_normal; chipColorAttr = R.attr.appTextSecondary }
             }
             b.dev.background = ContextCompat.getDrawable(this, chipBg)
-            b.dev.setTextColor(ContextCompat.getColor(this, chipColor))
+            b.dev.setTextColor(attrColor(chipColorAttr))
             val watched = store.isWatched(p.name)
             b.watch.setOnCheckedChangeListener(null)
             b.watch.isChecked = watched
@@ -147,14 +169,14 @@ class MainActivity : AppCompatActivity() {
         val mon = store.monitoring
         binding.btnMonitor.text = if (mon) "停止监控" else "开始监控"
         binding.btnMonitor.backgroundTintList = ColorStateList.valueOf(
-            ContextCompat.getColor(this, if (mon) R.color.danger_bg else R.color.gold)
+            attrColor(if (mon) R.attr.appDangerBg else R.attr.appPrimary)
         )
         binding.btnMonitor.strokeColor = ColorStateList.valueOf(
-            ContextCompat.getColor(this, if (mon) R.color.danger_stroke else android.R.color.transparent)
+            attrColor(if (mon) R.attr.appDangerStroke else android.R.color.transparent)
         )
         binding.btnMonitor.strokeWidth = if (mon) (resources.displayMetrics.density).toInt() else 0
         binding.btnMonitor.setTextColor(
-            ContextCompat.getColor(this, if (mon) R.color.danger else R.color.on_gold)
+            ColorStateList.valueOf(attrColor(if (mon) R.attr.appDanger else R.attr.appOnPrimary))
         )
         val dot = if (mon) R.drawable.bg_dot_on else R.drawable.bg_dot
         binding.liveText.setCompoundDrawablesRelativeWithIntrinsicBounds(dot, 0, 0, 0)
@@ -167,23 +189,23 @@ class MainActivity : AppCompatActivity() {
         if (m != null) {
             val zone: String
             val tag: String
-            val tagColor: Int
+            val tagColorAttr: Int
             val tagBg: Int
             when {
                 m.meanDev <= -0.03 -> {
-                    zone = "低价区（适合买入）"; tag = "低价区"; tagColor = R.color.buy; tagBg = R.drawable.bg_chip_buy
+                    zone = "低价区（适合买入）"; tag = "低价区"; tagColorAttr = R.attr.appBuy; tagBg = R.drawable.bg_chip_buy
                 }
                 m.meanDev >= 0.06 -> {
-                    zone = "高价区（适合卖出）"; tag = "高价区"; tagColor = R.color.sell; tagBg = R.drawable.bg_chip_sell
+                    zone = "高价区（适合卖出）"; tag = "高价区"; tagColorAttr = R.attr.appSell; tagBg = R.drawable.bg_chip_sell
                 }
                 else -> {
-                    zone = "正常区"; tag = "正常区"; tagColor = R.color.text_secondary; tagBg = R.drawable.bg_chip_normal
+                    zone = "正常区"; tag = "正常区"; tagColorAttr = R.attr.appTextSecondary; tagBg = R.drawable.bg_chip_normal
                 }
             }
             binding.hourInfo.text = "现在 ${"%02d:00".format(h)} · 相对均值 ${"%.1f%%".format(m.meanDev * 100)} · $zone（30 天规律）"
             binding.hourTag.text = tag
             binding.hourTag.background = ContextCompat.getDrawable(this, tagBg)
-            binding.hourTag.setTextColor(ContextCompat.getColor(this, tagColor))
+            binding.hourTag.setTextColor(attrColor(tagColorAttr))
         } else {
             binding.hourInfo.text = "当前 ${"%02d:00".format(h)} · 无模型数据"
             binding.hourTag.text = "无数据"

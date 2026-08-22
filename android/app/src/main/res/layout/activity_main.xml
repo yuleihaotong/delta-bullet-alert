@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="?attr/appBg"
     android:fillViewport="true">
 
     <LinearLayout
@@ -52,14 +52,14 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/ibm_plex_sans_bold"
                             android:text="@string/app_name"
-                            android:textColor="@color/text_primary"
+                            android:textColor="?attr/appTextPrimary"
                             android:textSize="17sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Developer: devlan"
-                            android:textColor="@color/gold"
+                            android:textColor="?attr/appPrimary"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -75,7 +75,7 @@
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
                     android:text="已停止"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="行情源 moligod.com · 尚未刷新"
-                android:textColor="@color/faint"
+                android:textColor="?attr/appFaint"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="最佳买入时段"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/appTextSecondary"
                         android:textSize="11sp" />
 
                     <TextView
@@ -128,14 +128,14 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/ibm_plex_sans_bold"
                         android:text="07:00"
-                        android:textColor="@color/buy"
+                        android:textColor="?attr/appBuy"
                         android:textSize="22sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="低于日均约 4%"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/appTextSecondary"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -164,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="最佳卖出时段"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/appTextSecondary"
                         android:textSize="11sp" />
 
                     <TextView
@@ -172,14 +172,14 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/ibm_plex_sans_bold"
                         android:text="16:00"
-                        android:textColor="@color/sell"
+                        android:textColor="?attr/appSell"
                         android:textSize="22sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="高于日均约 5%"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/appTextSecondary"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -203,7 +203,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="加载模型…"
-                android:textColor="@color/text_primary"
+                android:textColor="?attr/appTextPrimary"
                 android:textSize="13sp" />
 
             <TextView
@@ -261,7 +261,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/ibm_plex_sans_semibold"
             android:text="自选子弹"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/appTextPrimary"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -280,7 +280,7 @@
             android:layout_marginTop="8dp"
             android:fontFamily="@font/ibm_plex_sans_semibold"
             android:text="提醒设置"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/appTextPrimary"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -302,8 +302,33 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="主题风格"
+                    android:textColor="?attr/appTextSecondary"
+                    android:textSize="13sp" />
+
+                <Spinner
+                    android:id="@+id/themeSpinner"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="买入提醒时段（时）"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="13sp" />
 
                 <EditText
@@ -316,7 +341,7 @@
                     android:hint="7"
                     android:inputType="number"
                     android:paddingVertical="7dp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/appTextPrimary"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -332,7 +357,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="卖出提醒时段（时）"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="13sp" />
 
                 <EditText
@@ -345,7 +370,7 @@
                     android:hint="16"
                     android:inputType="number"
                     android:paddingVertical="7dp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/appTextPrimary"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -361,7 +386,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="买入触发偏离（≤ %）"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="13sp" />
 
                 <EditText
@@ -374,7 +399,7 @@
                     android:hint="-3"
                     android:inputType="numberDecimal|numberSigned"
                     android:paddingVertical="7dp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/appTextPrimary"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -390,7 +415,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="卖出触发偏离（≥ %）"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="13sp" />
 
                 <EditText
@@ -403,7 +428,7 @@
                     android:hint="6"
                     android:inputType="numberDecimal|numberSigned"
                     android:paddingVertical="7dp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/appTextPrimary"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -419,7 +444,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="轮询间隔（秒）"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/appTextSecondary"
                     android:textSize="13sp" />
 
                 <EditText
@@ -432,7 +457,7 @@
                     android:hint="30"
                     android:inputType="number"
                     android:paddingVertical="7dp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/appTextPrimary"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -454,7 +479,7 @@
             android:paddingBottom="30dp"
             android:paddingTop="6dp"
             android:text="Developer: devlan · Apache-2.0 开源源码\n打包版闭源 · 仅供学习交流 · 行情数据 moligod.com"
-            android:textColor="@color/faint"
+            android:textColor="?attr/appFaint"
             android:textSize="11.5sp" />
     </LinearLayout>
 </ScrollView>

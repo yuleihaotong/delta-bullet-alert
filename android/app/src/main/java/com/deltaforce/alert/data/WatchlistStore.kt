@@ -42,6 +42,9 @@ class WatchlistStore private constructor(ctx: Context) {
     var monitoring: Boolean
         get() = sp.getBoolean("monitoring", false)
         set(v) = sp.edit().putBoolean("monitoring", v).apply()
+    var themeIndex: Int
+        get() = sp.getInt("theme", 0)
+        set(v) = sp.edit().putInt("theme", v.coerceIn(0, 5)).apply()
 
     // ---------------- 自选子弹 ----------------
     private fun watchKey(): String = "watched"

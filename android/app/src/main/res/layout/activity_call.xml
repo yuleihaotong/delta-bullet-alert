@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_deep"
+    android:background="?attr/appBgDeep"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -20,7 +20,7 @@
         android:fontFamily="@font/ibm_plex_sans_bold"
         android:letterSpacing="0.04"
         android:text="买入提醒"
-        android:textColor="@color/buy"
+        android:textColor="?attr/appBuy"
         android:textSize="31sp" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:text="提醒详情"
-        android:textColor="@color/text_secondary"
+        android:textColor="?attr/appTextSecondary"
         android:textSize="15sp" />
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
         android:text="来自 三角洲子弹提醒 · devlan"
-        android:textColor="@color/faint"
+        android:textColor="?attr/appFaint"
         android:textSize="12sp" />
 
     <Space

@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.deltaforce.alert.R
+import com.deltaforce.alert.attrColor
 import com.deltaforce.alert.databinding.ActivityCallBinding
 
 /** QQ 通话式强提醒界面：全屏 + 循环响铃 + 震动 + 接听/挂断。 */
@@ -25,6 +26,11 @@ class IncomingCallActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(com.deltaforce.alert.ThemeIndex.styleOf(com.deltaforce.alert.data.WatchlistStore.get(this).themeIndex))
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         binding = ActivityCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -42,7 +48,7 @@ class IncomingCallActivity : AppCompatActivity() {
         val type = intent.getStringExtra(RingHelper.EXTRA_TYPE) ?: "buy"
         binding.callTitle.text = title
         binding.callTitle.setTextColor(
-            ContextCompat.getColor(this, if (type == "sell") R.color.sell else R.color.buy)
+            attrColor(if (type == "sell") R.attr.appSell else R.attr.appBuy)
         )
         binding.callDetail.text = text
 

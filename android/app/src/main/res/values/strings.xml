@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">三角洲子弹提醒</string>
+    <string-array name="themes">
+        <item>A · 深蓝鎏金</item>
+        <item>B · 霓虹电竞</item>
+        <item>C · 翡翠终端</item>
+        <item>D · 琉璃星空</item>
+        <item>E · 纯黑暗色</item>
+        <item>F · 白色亮色</item>
+    </string-array>
 </resources>

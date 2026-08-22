@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============ 主题色属性（6 套主题各自覆盖） ============ -->
+    <attr name="appBg" format="color" />
+    <attr name="appBgDeep" format="color" />
+    <attr name="appCard" format="color" />
+    <attr name="appCardSoft" format="color" />
+    <attr name="appCardBorder" format="color" />
+
+    <attr name="appPrimary" format="color" />
+    <attr name="appPrimaryBright" format="color" />
+    <attr name="appOnPrimary" format="color" />
+
+    <attr name="appTextPrimary" format="color" />
+    <attr name="appTextSecondary" format="color" />
+    <attr name="appFaint" format="color" />
+
+    <attr name="appBuy" format="color" />
+    <attr name="appBuyBg" format="color" />
+    <attr name="appSell" format="color" />
+    <attr name="appSellBg" format="color" />
+    <attr name="appNormalBg" format="color" />
+
+    <attr name="appDanger" format="color" />
+    <attr name="appDangerBg" format="color" />
+    <attr name="appDangerStroke" format="color" />
+
+    <!-- 渐变端点 -->
+    <attr name="appHeaderStart" format="color" />
+    <attr name="appHeaderMid" format="color" />
+    <attr name="appHeaderEnd" format="color" />
+    <attr name="appCallStart" format="color" />
+    <attr name="appCallMid" format="color" />
+    <attr name="appCallEnd" format="color" />
+    <attr name="appBrandStart" format="color" />
+    <attr name="appBrandEnd" format="color" />
+    <attr name="appBtnStart" format="color" />
+    <attr name="appBtnEnd" format="color" />
+</resources>

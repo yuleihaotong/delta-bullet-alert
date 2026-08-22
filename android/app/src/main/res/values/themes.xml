@@ -1,31 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 基础主题：深色高级感，全局 IBM Plex Sans -->
+    <!-- ==================================================================
+         基础主题（A · 深蓝鎏金，默认）
+         ================================================================== -->
     <style name="Theme.DeltaBulletAlert" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:statusBarColor">@color/bg_deep</item>
-        <item name="android:navigationBarColor">@color/bg_deep</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:fontFamily">@font/ibm_plex_sans_regular</item>
-        <item name="colorPrimary">@color/gold</item>
-        <item name="colorPrimaryDark">@color/bg_deep</item>
-        <item name="colorAccent">@color/gold</item>
-        <item name="colorControlActivated">@color/gold</item>
-        <item name="colorControlHighlight">@color/card_border</item>
-        <item name="materialButtonStyle">@style/Widget.Delta.Button</item>
+        <!-- 色板 -->
+        <item name="appBg">#0B1220</item>
+        <item name="appBgDeep">#070D18</item>
+        <item name="appCard">#131F36</item>
+        <item name="appCardSoft">#101A2E</item>
+        <item name="appCardBorder">#243353</item>
+        <item name="appPrimary">#D4A94E</item>
+        <item name="appPrimaryBright">#EBC97A</item>
+        <item name="appOnPrimary">#1A1405</item>
+        <item name="appTextPrimary">#F1F5F9</item>
+        <item name="appTextSecondary">#94A3B8</item>
+        <item name="appFaint">#5B6B85</item>
+        <item name="appBuy">#34D399</item>
+        <item name="appBuyBg">#0D2B21</item>
+        <item name="appSell">#FB923C</item>
+        <item name="appSellBg">#30190A</item>
+        <item name="appNormalBg">#1A2740</item>
+        <item name="appDanger">#F87171</item>
+        <item name="appDangerBg">#331419</item>
+        <item name="appDangerStroke">#4A2A33</item>
+        <item name="appHeaderStart">#16263F</item>
+        <item name="appHeaderMid">#101B30</item>
+        <item name="appHeaderEnd">#0B1220</item>
+        <item name="appCallStart">#1A2A48</item>
+        <item name="appCallMid">#0B1220</item>
+        <item name="appCallEnd">#070D18</item>
+        <item name="appBrandStart">#EBC97A</item>
+        <item name="appBrandEnd">#B8892F</item>
+        <item name="appBtnStart">#EBC97A</item>
+        <item name="appBtnEnd">#C99B3C</item>
+
+        <!-- 系统外观 -->
+        <item name="android:windowBackground">?attr/appBg</item>
+        <item name="android:statusBarColor">?attr/appBgDeep</item>
+        <item name="android:navigationBarColor">?attr/appBgDeep</item>
         <item name="android:windowLightStatusBar">false</item>
-    </style>
-
-    <!-- QQ 通话式全屏来电界面主题（锁屏亮屏由 Manifest 的 showWhenLocked/turnScreenOn 提供） -->
-    <style name="Theme.DeltaBulletAlert.Call" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/bg_deep</item>
+        <item name="android:textColorPrimary">?attr/appTextPrimary</item>
+        <item name="android:textColorSecondary">?attr/appTextSecondary</item>
         <item name="android:fontFamily">@font/ibm_plex_sans_regular</item>
+
+        <item name="colorPrimary">?attr/appPrimary</item>
+        <item name="colorPrimaryDark">?attr/appBgDeep</item>
+        <item name="colorAccent">?attr/appPrimary</item>
+        <item name="colorControlActivated">?attr/appPrimary</item>
+        <item name="colorControlHighlight">?attr/appCardBorder</item>
+        <item name="materialButtonStyle">@style/Widget.Delta.Button</item>
     </style>
 
-    <!-- 按钮样式：主按钮=高级金 -->
+    <!-- B · 霓虹电竞 -->
+    <style name="Theme.DeltaBulletAlert.Neon">
+        <item name="appBg">#0A0E14</item>
+        <item name="appBgDeep">#06080D</item>
+        <item name="appCard">#111827</item>
+        <item name="appCardSoft">#0D141F</item>
+        <item name="appCardBorder">#1F2B3E</item>
+        <item name="appPrimary">#22D3EE</item>
+        <item name="appPrimaryBright">#67E8F9</item>
+        <item name="appOnPrimary">#062A33</item>
+        <item name="appTextPrimary">#F1F5F9</item>
+        <item name="appTextSecondary">#8FA3B8</item>
+        <item name="appFaint">#4E6178</item>
+        <item name="appBuy">#34D399</item>
+        <item name="appBuyBg">#0B2A22</item>
+        <item name="appSell">#FB7185</item>
+        <item name="appSellBg">#331420</item>
+        <item name="appNormalBg">#182233</item>
+        <item name="appDanger">#FB7185</item>
+        <item name="appDangerBg">#33141F</item>
+        <item name="appDangerStroke">#5C2A3A</item>
+        <item name="appHeaderStart">#132438</item>
+        <item name="appHeaderMid">#0C1522</item>
+        <item name="appHeaderEnd">#0A0E14</item>
+        <item name="appCallStart">#14243C</item>
+        <item name="appCallMid">#0A0E14</item>
+        <item name="appCallEnd">#06080D</item>
+        <item name="appBrandStart">#22D3EE</item>
+        <item name="appBrandEnd">#A78BFA</item>
+        <item name="appBtnStart">#67E8F9</item>
+        <item name="appBtnEnd">#0EA5C9</item>
+    </style>
+
+    <!-- C · 翡翠终端 -->
+    <style name="Theme.DeltaBulletAlert.Emerald">
+        <item name="appBg">#0B1210</item>
+        <item name="appBgDeep">#060B09</item>
+        <item name="appCard">#12201B</item>
+        <item name="appCardSoft">#0E1915</item>
+        <item name="appCardBorder">#1F332B</item>
+        <item name="appPrimary">#10B981</item>
+        <item name="appPrimaryBright">#6EE7B7</item>
+        <item name="appOnPrimary">#04231A</item>
+        <item name="appTextPrimary">#EAF4F0</item>
+        <item name="appTextSecondary">#8AA89C</item>
+        <item name="appFaint">#4E6B60</item>
+        <item name="appBuy">#34D399</item>
+        <item name="appBuyBg">#0B2A22</item>
+        <item name="appSell">#F59E0B</item>
+        <item name="appSellBg">#33220A</item>
+        <item name="appNormalBg">#16261F</item>
+        <item name="appDanger">#F87171</item>
+        <item name="appDangerBg">#331419</item>
+        <item name="appDangerStroke">#4A2A33</item>
+        <item name="appHeaderStart">#143027</item>
+        <item name="appHeaderMid">#0E1F18</item>
+        <item name="appHeaderEnd">#0B1210</item>
+        <item name="appCallStart">#143227</item>
+        <item name="appCallMid">#0B1210</item>
+        <item name="appCallEnd">#060B09</item>
+        <item name="appBrandStart">#34D399</item>
+        <item name="appBrandEnd">#0F766E</item>
+        <item name="appBtnStart">#34D399</item>
+        <item name="appBtnEnd">#0EA371</item>
+    </style>
+
+    <!-- D · 琉璃星空 -->
+    <style name="Theme.DeltaBulletAlert.Aurora">
+        <item name="appBg">#0E0A1F</item>
+        <item name="appBgDeep">#080614</item>
+        <item name="appCard">#191332</item>
+        <item name="appCardSoft">#140F29</item>
+        <item name="appCardBorder">#2A2150</item>
+        <item name="appPrimary">#C9A227</item>
+        <item name="appPrimaryBright">#EBC97A</item>
+        <item name="appOnPrimary">#1A1405</item>
+        <item name="appTextPrimary">#F2F0FA</item>
+        <item name="appTextSecondary">#A29AC4</item>
+        <item name="appFaint">#6A6290</item>
+        <item name="appBuy">#5EEAD4</item>
+        <item name="appBuyBg">#0C2E2A</item>
+        <item name="appSell">#FBBF24</item>
+        <item name="appSellBg">#33240A</item>
+        <item name="appNormalBg">#221A42</item>
+        <item name="appDanger">#F87171</item>
+        <item name="appDangerBg">#331419</item>
+        <item name="appDangerStroke">#4A2A33</item>
+        <item name="appHeaderStart">#241B4E</item>
+        <item name="appHeaderMid">#150F2E</item>
+        <item name="appHeaderEnd">#0E0A1F</item>
+        <item name="appCallStart">#2A1F5E</item>
+        <item name="appCallMid">#0E0A1F</item>
+        <item name="appCallEnd">#080614</item>
+        <item name="appBrandStart">#A78BFA</item>
+        <item name="appBrandEnd">#C9A227</item>
+        <item name="appBtnStart">#EBC97A</item>
+        <item name="appBtnEnd">#A78BFA</item>
+    </style>
+
+    <!-- E · 纯黑暗色 -->
+    <style name="Theme.DeltaBulletAlert.Mono">
+        <item name="appBg">#0A0A0A</item>
+        <item name="appBgDeep">#050505</item>
+        <item name="appCard">#141414</item>
+        <item name="appCardSoft">#0F0F0F</item>
+        <item name="appCardBorder">#262626</item>
+        <item name="appPrimary">#D4D4D4</item>
+        <item name="appPrimaryBright">#FFFFFF</item>
+        <item name="appOnPrimary">#0A0A0A</item>
+        <item name="appTextPrimary">#F5F5F5</item>
+        <item name="appTextSecondary">#A3A3A3</item>
+        <item name="appFaint">#6B6B6B</item>
+        <item name="appBuy">#4ADE80</item>
+        <item name="appBuyBg">#0C2417</item>
+        <item name="appSell">#FBBF24</item>
+        <item name="appSellBg">#261D06</item>
+        <item name="appNormalBg">#1A1A1A</item>
+        <item name="appDanger">#F87171</item>
+        <item name="appDangerBg">#2A1113</item>
+        <item name="appDangerStroke">#4A2023</item>
+        <item name="appHeaderStart">#181818</item>
+        <item name="appHeaderMid">#0D0D0D</item>
+        <item name="appHeaderEnd">#0A0A0A</item>
+        <item name="appCallStart">#181818</item>
+        <item name="appCallMid">#0A0A0A</item>
+        <item name="appCallEnd">#050505</item>
+        <item name="appBrandStart">#FFFFFF</item>
+        <item name="appBrandEnd">#9A9A9A</item>
+        <item name="appBtnStart">#FFFFFF</item>
+        <item name="appBtnEnd">#B8B8B8</item>
+    </style>
+
+    <!-- F · 白色亮色 -->
+    <style name="Theme.DeltaBulletAlert.Light">
+        <item name="appBg">#F5F7FA</item>
+        <item name="appBgDeep">#EFF2F6</item>
+        <item name="appCard">#FFFFFF</item>
+        <item name="appCardSoft">#F8FAFC</item>
+        <item name="appCardBorder">#E2E8F0</item>
+        <item name="appPrimary">#B8860B</item>
+        <item name="appPrimaryBright">#D4A94E</item>
+        <item name="appOnPrimary">#FFFFFF</item>
+        <item name="appTextPrimary">#0F172A</item>
+        <item name="appTextSecondary">#475569</item>
+        <item name="appFaint">#94A3B8</item>
+        <item name="appBuy">#059669</item>
+        <item name="appBuyBg">#E7F6F0</item>
+        <item name="appSell">#D97706</item>
+        <item name="appSellBg">#FDF0E3</item>
+        <item name="appNormalBg">#F1F5F9</item>
+        <item name="appDanger">#DC2626</item>
+        <item name="appDangerBg">#FDF0F0</item>
+        <item name="appDangerStroke">#F1C1C1</item>
+        <item name="appHeaderStart">#FFFFFF</item>
+        <item name="appHeaderMid">#FAFBFD</item>
+        <item name="appHeaderEnd">#F5F7FA</item>
+        <item name="appCallStart">#FFFFFF</item>
+        <item name="appCallMid">#F5F7FA</item>
+        <item name="appCallEnd">#EDF1F5</item>
+        <item name="appBrandStart">#D4A94E</item>
+        <item name="appBrandEnd">#B8860B</item>
+        <item name="appBtnStart">#D4A94E</item>
+        <item name="appBtnEnd">#A87E0B</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- ==================================================================
+         通用组件样式（颜色全部走主题属性）
+         ================================================================== -->
     <style name="Widget.Delta.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:minHeight">48dp</item>
@@ -35,23 +230,23 @@
     </style>
 
     <style name="Widget.Delta.Button.Primary" parent="Widget.Delta.Button">
-        <item name="backgroundTint">@color/gold</item>
-        <item name="android:textColor">#1A1405</item>
+        <item name="backgroundTint">?attr/appPrimary</item>
+        <item name="android:textColor">?attr/appOnPrimary</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.Delta.Button.Ghost" parent="Widget.Delta.Button">
-        <item name="backgroundTint">@color/card_soft</item>
-        <item name="strokeColor">@color/card_border</item>
+        <item name="backgroundTint">?attr/appCardSoft</item>
+        <item name="strokeColor">?attr/appCardBorder</item>
         <item name="strokeWidth">1dp</item>
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/appTextPrimary</item>
     </style>
 
     <style name="Widget.Delta.Button.Danger" parent="Widget.Delta.Button">
-        <item name="backgroundTint">@color/danger_bg</item>
-        <item name="strokeColor">#4A2A33</item>
+        <item name="backgroundTint">?attr/appDangerBg</item>
+        <item name="strokeColor">?attr/appDangerStroke</item>
         <item name="strokeWidth">1dp</item>
-        <item name="android:textColor">@color/danger</item>
+        <item name="android:textColor">?attr/appDanger</item>
     </style>
 
     <!-- 来电界面 接听/挂断 按钮（胶囊形） -->
@@ -64,5 +259,13 @@
         <item name="android:letterSpacing">0.04</item>
         <item name="cornerRadius">28dp</item>
         <item name="android:elevation">6dp</item>
+    </style>
+
+    <!-- QQ 通话式全屏来电界面主题（锁屏亮屏由 Manifest 的 showWhenLocked/turnScreenOn 提供；
+         实际颜色主题在代码里按用户选择 setTheme 覆盖） -->
+    <style name="Theme.DeltaBulletAlert.Call" parent="Theme.DeltaBulletAlert">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">?attr/appBgDeep</item>
     </style>
 </resources>

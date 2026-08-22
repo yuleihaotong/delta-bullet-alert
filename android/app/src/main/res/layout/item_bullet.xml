@@ -18,7 +18,7 @@
         android:fontFamily="@font/ibm_plex_sans_medium"
         android:maxLines="1"
         android:text="子弹名"
-        android:textColor="@color/text_primary"
+        android:textColor="?attr/appTextPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:fontFamily="@font/ibm_plex_sans_bold"
         android:gravity="end"
         android:text="0"
-        android:textColor="@color/text_primary"
+        android:textColor="?attr/appTextPrimary"
         android:textSize="15sp" />
 
     <TextView
