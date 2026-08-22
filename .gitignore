@@ -1,0 +1,26 @@
+# 构建产物 / 本机配置 —— 不入库（打包版不开源，盈利产品）
+# Android
+android/local.properties
+android/.gradle/
+android/build/
+android/app/build/
+android/.idea/
+android/captures/
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 行情原始数据缓存（可随时用 tools/fetch_history.py 重新拉取）
+data/history/*.json
+!data/history/_sample.json
+
+# 系统/编辑器
+.DS_Store
+*.swp
