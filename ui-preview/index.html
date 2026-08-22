@@ -178,6 +178,7 @@
   .section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
   .section-head h3 { font-size:14px; font-weight:600; letter-spacing:.3px; }
   .section-head .cnt { font-size:12px; color:var(--faint); }
+  .arrow { display:inline-block; transition:transform .18s; vertical-align:middle; margin-left:4px; }
   .list { display:flex; flex-direction:column; gap:8px; }
   .row { display:flex; align-items:center; background:var(--card); border:1px solid var(--card-border); border-radius:14px; padding:11px 14px; }
   .row .name { flex:1; font-size:14px; font-weight:500; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -291,9 +292,13 @@
         </div>
 
         <div class="section">
-          <div class="section-head">
-            <h3>自选子弹</h3>
-            <span class="cnt" id="watchCount">已监控 3 种</span>
+          <div class="section-head" id="bulletHead" onclick="toggleList()" style="cursor:pointer">
+            <h3>自选子弹
+              <span class="arrow" id="bulletArrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+            </h3>
+            <span class="cnt" id="watchCount">已监控 3 种 · 共 6 种</span>
           </div>
           <div class="list" id="bulletList">
             <div class="row"><span class="name">5.56x45mm M855</span><span class="price">541</span><span class="chip norm">正常</span><span class="switch on" onclick="toggleWatch(this)"></span></div>
@@ -373,6 +378,13 @@
   function dismissCall(reason) {
     alert('已' + reason);
     switchTab('main');
+  }
+  function toggleList() {
+    const list = document.getElementById('bulletList');
+    const arrow = document.getElementById('bulletArrow');
+    const hidden = list.style.display === 'none';
+    list.style.display = hidden ? 'flex' : 'none';
+    arrow.style.transform = hidden ? '' : 'rotate(180deg)';
   }
   function toggleWatch(el) {
     el.classList.toggle('on');
