@@ -253,16 +253,45 @@
                 android:text="测试提醒" />
         </LinearLayout>
 
-        <!-- ============ 自选子弹 ============ -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- ============ 自选子弹（可折叠） ============ -->
+        <LinearLayout
+            android:id="@+id/sectionHeader"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/ibm_plex_sans_semibold"
-            android:text="自选子弹（价格=每发单价）"
-            android:textColor="?attr/appTextPrimary"
-            android:textSize="14sp" />
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="6dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/ibm_plex_sans_semibold"
+                android:text="自选子弹（价格=每发单价）"
+                android:textColor="?attr/appTextPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/bulletCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="0 种"
+                android:textColor="?attr/appFaint"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/sectionArrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="折叠或展开子弹列表"
+                android:src="@drawable/ic_chevron" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/list"

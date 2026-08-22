@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener { saveSettings(); Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show() }
 
         setupThemeSpinner()
+        setupCollapsibleList()
         ensureRefMeans()
         loadSettings()
         updateMonitorUi()
@@ -131,6 +132,7 @@ class MainActivity : AppCompatActivity() {
             }
             binding.list.addView(b.root)
         }
+        binding.bulletCount.text = "共 ${bullets.size} 种 · 监控 ${store.getWatched().size} 种"
     }
 
     override fun onResume() {
@@ -156,6 +158,18 @@ class MainActivity : AppCompatActivity() {
         if (ms == null || ms <= 0) return "--:--"
         val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai")).apply { timeInMillis = ms }
         return "%02d:%02d".format(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
+    }
+
+    /** 自选子弹列表折叠/展开 */
+    private fun setupCollapsibleList() {
+        binding.list.visibility = if (store.listCollapsed) View.GONE else View.VISIBLE
+        binding.sectionArrow.rotation = if (store.listCollapsed) 180f else 0f
+        binding.sectionHeader.setOnClickListener {
+            val collapsed = !store.listCollapsed
+            store.listCollapsed = collapsed
+            binding.list.visibility = if (collapsed) View.GONE else View.VISIBLE
+            binding.sectionArrow.animate().rotation(if (collapsed) 180f else 0f).setDuration(180).start()
+        }
     }
 
     private fun refreshPrices() {

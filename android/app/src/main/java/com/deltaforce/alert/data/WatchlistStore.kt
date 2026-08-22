@@ -45,6 +45,9 @@ class WatchlistStore private constructor(ctx: Context) {
     var themeIndex: Int
         get() = sp.getInt("theme", 0)
         set(v) = sp.edit().putInt("theme", v.coerceIn(0, 5)).apply()
+    var listCollapsed: Boolean
+        get() = sp.getBoolean("list_collapsed", false)
+        set(v) = sp.edit().putBoolean("list_collapsed", v).apply()
 
     // ---------------- 自选子弹 ----------------
     private fun watchKey(): String = "watched"
