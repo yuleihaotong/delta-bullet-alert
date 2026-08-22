@@ -13,6 +13,8 @@
     <color name="gold">#D4A94E</color>
     <color name="gold_bright">#EBC97A</color>
     <color name="gold_dim">#8C6F2F</color>
+    <color name="on_gold">#1A1405</color>
+    <color name="danger_stroke">#4A2A33</color>
 
     <color name="text_primary">#F1F5F9</color>
     <color name="text_secondary">#94A3B8</color>

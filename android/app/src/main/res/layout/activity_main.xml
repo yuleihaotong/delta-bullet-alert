@@ -223,39 +223,33 @@
             android:paddingHorizontal="16dp"
             android:paddingTop="14dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRefresh"
                 style="@style/Widget.Delta.Button.Ghost"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:text="刷新" />
 
-            <Button
-                android:id="@+id/btnStart"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMonitor"
                 style="@style/Widget.Delta.Button.Primary"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:text="开始监控" />
 
-            <Button
-                android:id="@+id/btnStop"
-                style="@style/Widget.Delta.Button.Danger"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="停止" />
-
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTest"
                 style="@style/Widget.Delta.Button.Ghost"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:text="测试提醒" />
         </LinearLayout>
 
@@ -442,7 +436,7 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
                 style="@style/Widget.Delta.Button.Primary"
                 android:layout_width="match_parent"

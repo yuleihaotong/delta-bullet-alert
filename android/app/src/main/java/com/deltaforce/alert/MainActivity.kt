@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -48,17 +49,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnRefresh.setOnClickListener { refreshPrices() }
-        binding.btnStart.setOnClickListener {
-            saveSettings()
-            ensurePermissions()
-            PriceWatchService.start(this)
-            Toast.makeText(this, "监控已开始", Toast.LENGTH_SHORT).show()
-            updateMonitorUi()
-        }
-        binding.btnStop.setOnClickListener {
-            PriceWatchService.stop(this)
-            AlertScheduler.cancelAll(this)
-            Toast.makeText(this, "监控已停止", Toast.LENGTH_SHORT).show()
+        binding.btnMonitor.setOnClickListener {
+            if (store.monitoring) {
+                PriceWatchService.stop(this)
+                AlertScheduler.cancelAll(this)
+                Toast.makeText(this, "监控已停止", Toast.LENGTH_SHORT).show()
+            } else {
+                saveSettings()
+                ensurePermissions()
+                PriceWatchService.start(this)
+                Toast.makeText(this, "监控已开始", Toast.LENGTH_SHORT).show()
+            }
             updateMonitorUi()
         }
         binding.btnTest.setOnClickListener {
@@ -143,11 +144,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateMonitorUi() {
-        binding.btnStart.isEnabled = !store.monitoring
-        binding.btnStop.isEnabled = store.monitoring
-        val dot = if (store.monitoring) R.drawable.bg_dot_on else R.drawable.bg_dot
+        val mon = store.monitoring
+        binding.btnMonitor.text = if (mon) "停止监控" else "开始监控"
+        binding.btnMonitor.backgroundTintList = ColorStateList.valueOf(
+            ContextCompat.getColor(this, if (mon) R.color.danger_bg else R.color.gold)
+        )
+        binding.btnMonitor.strokeColor = ColorStateList.valueOf(
+            ContextCompat.getColor(this, if (mon) R.color.danger_stroke else android.R.color.transparent)
+        )
+        binding.btnMonitor.strokeWidth = if (mon) (resources.displayMetrics.density).toInt() else 0
+        binding.btnMonitor.setTextColor(
+            ContextCompat.getColor(this, if (mon) R.color.danger else R.color.on_gold)
+        )
+        val dot = if (mon) R.drawable.bg_dot_on else R.drawable.bg_dot
         binding.liveText.setCompoundDrawablesRelativeWithIntrinsicBounds(dot, 0, 0, 0)
-        binding.liveText.text = if (store.monitoring) "监控中 · 每 ${store.pollSeconds}s" else "已停止"
+        binding.liveText.text = if (mon) "监控中 · 每 ${store.pollSeconds}s" else "已停止"
     }
 
     private fun showCurrentHour() {
