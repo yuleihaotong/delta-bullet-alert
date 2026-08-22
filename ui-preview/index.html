@@ -115,7 +115,7 @@
   .footer b { color:var(--gold-dim); font-weight:600; }
 
   /* ---------- 来电界面 ---------- */
-  .call { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:space-between; padding:110px 28px 56px; text-align:center; background:radial-gradient(600px 400px at 50% 18%, #1A2A48 0%, #0B1220 55%, #070D18 100%); }
+  .call { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:space-between; padding:168px 28px 60px; text-align:center; background:radial-gradient(600px 400px at 50% 18%, #1A2A48 0%, #0B1220 55%, #070D18 100%); }
   .call.show { display:flex; }
   .avatar { width:108px; height:108px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle, #EBC97A 0%, #B8892F 100%); box-shadow:0 0 0 8px rgba(212,169,78,.12), 0 0 46px rgba(212,169,78,.5); animation:avatarPulse 1.8s ease-in-out infinite; }
   .avatar svg { width:52px; height:52px; }
@@ -125,10 +125,10 @@
   .call-detail { font-size:14px; color:var(--text2); margin-top:10px; line-height:1.7; max-width:300px; }
   .call-detail b { color:var(--text); font-weight:600; }
   .call-from { font-size:12px; color:var(--faint); margin-top:8px; }
-  .call-btns { display:flex; gap:26px; }
-  .call-btn { width:118px; height:58px; border-radius:29px; border:none; color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer; letter-spacing:2px; transition:transform .08s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .call-btns { display:flex; gap:24px; align-items:center; justify-content:center; }
+  .call-btn { width:120px; height:58px; border-radius:29px; border:none; color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; line-height:1; transition:transform .08s; }
   .call-btn:active { transform:scale(.95); }
-  .call-btn svg { width:20px; height:20px; }
+  .call-btn svg { width:20px; height:20px; flex-shrink:0; display:block; }
   .call-btn.answer { background:linear-gradient(180deg, #34D399, #0FA474); box-shadow:0 8px 26px rgba(52,211,153,.35); }
   .call-btn.decline { background:linear-gradient(180deg, #F87171, #C24040); box-shadow:0 8px 26px rgba(248,113,113,.3); }
 
