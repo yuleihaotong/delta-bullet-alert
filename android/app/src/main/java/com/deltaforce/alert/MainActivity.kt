@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.list.adapter = adapter
         binding.btnRefresh.setOnClickListener { refreshPrices() }
         binding.btnStart.setOnClickListener {
             saveSettings()
@@ -75,21 +74,16 @@ class MainActivity : AppCompatActivity() {
         refreshPrices()
     }
 
-    private val adapter = object : BaseAdapter() {
-        override fun getCount() = bullets.size
-        override fun getItem(pos: Int) = bullets[pos]
-        override fun getItemId(pos: Int) = pos.toLong()
-
-        override fun getView(pos: Int, convertView: View?, parent: ViewGroup): View {
-            val b = if (convertView != null) ItemBulletBinding.bind(convertView)
-            else ItemBulletBinding.inflate(LayoutInflater.from(this@MainActivity), parent, false)
-            val p = bullets[pos]
+    /** 渲染自选子弹列表（LinearLayout，随外层 ScrollView 一起滚动） */
+    private fun renderList() {
+        binding.list.removeAllViews()
+        val refs = store.getRefMeans()
+        for (p in bullets) {
+            val b = ItemBulletBinding.inflate(layoutInflater, binding.list, false)
             b.name.text = p.name
             b.price.text = p.price.toString()
-            val refs = store.getRefMeans()
             val dev = refs[p.name]?.let { r -> if (r > 0) (p.price - r) / r else null }
             b.dev.text = if (dev != null) "%.1f%%".format(dev * 100) else "--"
-            val ctx = this@MainActivity
             val chipBg: Int
             val chipColor: Int
             when {
@@ -98,8 +92,8 @@ class MainActivity : AppCompatActivity() {
                 dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColor = R.color.sell }
                 else -> { chipBg = R.drawable.bg_chip_normal; chipColor = R.color.text_secondary }
             }
-            b.dev.background = ContextCompat.getDrawable(ctx, chipBg)
-            b.dev.setTextColor(ContextCompat.getColor(ctx, chipColor))
+            b.dev.background = ContextCompat.getDrawable(this, chipBg)
+            b.dev.setTextColor(ContextCompat.getColor(this, chipColor))
             val watched = store.isWatched(p.name)
             b.watch.setOnCheckedChangeListener(null)
             b.watch.isChecked = watched
@@ -109,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     checked
                 )
             }
-            return b.root
+            binding.list.addView(b.root)
         }
     }
 
@@ -119,12 +113,12 @@ class MainActivity : AppCompatActivity() {
             try {
                 bullets = withContext(Dispatchers.IO) { com.deltaforce.alert.data.PriceApi.fetchCurrentPrices() }
                 store.cachePrices(bullets)
-                adapter.notifyDataSetChanged()
+                renderList()
                 val t = Calendar.getInstance()
                 binding.status.text = "已更新 ${bullets.size} 种子弹 · ${"%02d:%02d".format(t.get(Calendar.HOUR_OF_DAY), t.get(Calendar.MINUTE))}"
             } catch (e: Exception) {
                 bullets = store.cachedPrices()
-                adapter.notifyDataSetChanged()
+                renderList()
                 binding.status.text = "刷新失败（${e.message ?: "网络错误"}），显示上次缓存"
             }
         }
