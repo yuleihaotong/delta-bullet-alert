@@ -11,8 +11,9 @@ class TimeWindowReceiver : BroadcastReceiver() {
             AlertScheduler.ACTION_BUY -> {
                 RingHelper.fullScreenAlert(
                     ctx,
-                    "📉 买入提醒",
-                    "现在是最佳买入时段，适合上线扫低价子弹（30 天规律：此时低于日均约 4%）"
+                    "买入提醒",
+                    "现在是最佳买入时段，适合上线扫低价子弹（30 天规律：此时低于日均约 4%）",
+                    "buy"
                 )
                 val s = WatchStoreAccess.get(ctx)
                 AlertScheduler.scheduleDaily(ctx, s.buyHour, s.buyMinute, AlertScheduler.REQ_BUY, AlertScheduler.ACTION_BUY)
@@ -20,8 +21,9 @@ class TimeWindowReceiver : BroadcastReceiver() {
             AlertScheduler.ACTION_SELL -> {
                 RingHelper.fullScreenAlert(
                     ctx,
-                    "📈 卖出提醒",
-                    "现在是最佳卖出时段，适合挂单卖出子弹（30 天规律：此时高于日均约 5%）"
+                    "卖出提醒",
+                    "现在是最佳卖出时段，适合挂单卖出子弹（30 天规律：此时高于日均约 5%）",
+                    "sell"
                 )
                 val s = WatchStoreAccess.get(ctx)
                 AlertScheduler.scheduleDaily(ctx, s.sellHour, s.sellMinute, AlertScheduler.REQ_SELL, AlertScheduler.ACTION_SELL)

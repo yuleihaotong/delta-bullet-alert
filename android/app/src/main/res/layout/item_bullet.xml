@@ -2,37 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:background="@drawable/bg_card"
     android:gravity="center_vertical"
-    android:paddingVertical="6dp">
+    android:orientation="horizontal"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="11dp">
 
     <TextView
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="14sp"
-        android:text="子弹名" />
+        android:ellipsize="end"
+        android:fontFamily="@font/ibm_plex_sans_medium"
+        android:maxLines="1"
+        android:text="子弹名"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/price"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/ibm_plex_sans_bold"
         android:gravity="end"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="0" />
+        android:text="0"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/dev"
-        android:layout_width="64dp"
+        android:layout_width="58dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:textSize="13sp"
-        android:text="--" />
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/ibm_plex_sans_semibold"
+        android:gravity="center"
+        android:minWidth="58dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
+        android:text="--"
+        android:textSize="11sp" />
 
-    <CheckBox
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/watch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp" />
 </LinearLayout>

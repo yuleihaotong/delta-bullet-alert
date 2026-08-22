@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnTest.setOnClickListener {
             ensurePermissions()
-            RingHelper.fullScreenAlert(this, "📞 测试强提醒", "这是 QQ 通话式提醒效果预览")
+            RingHelper.fullScreenAlert(this, "测试强提醒", "QQ 通话式响铃预览 · 锁屏也会响", "buy")
         }
         binding.btnSave.setOnClickListener { saveSettings(); Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show() }
 
@@ -89,17 +89,17 @@ class MainActivity : AppCompatActivity() {
             val refs = store.getRefMeans()
             val dev = refs[p.name]?.let { r -> if (r > 0) (p.price - r) / r else null }
             b.dev.text = if (dev != null) "%.1f%%".format(dev * 100) else "--"
-            b.dev.setTextColor(
-                ContextCompat.getColor(
-                    this@MainActivity,
-                    when {
-                        dev == null -> android.R.color.darker_gray
-                        dev <= -0.03 -> android.R.color.holo_green_dark
-                        dev >= 0.06 -> android.R.color.holo_red_dark
-                        else -> android.R.color.darker_gray
-                    }
-                )
-            )
+            val ctx = this@MainActivity
+            val chipBg: Int
+            val chipColor: Int
+            when {
+                dev == null -> { chipBg = R.drawable.bg_chip_normal; chipColor = R.color.text_secondary }
+                dev <= -0.03 -> { chipBg = R.drawable.bg_chip_buy; chipColor = R.color.buy }
+                dev >= 0.06 -> { chipBg = R.drawable.bg_chip_sell; chipColor = R.color.sell }
+                else -> { chipBg = R.drawable.bg_chip_normal; chipColor = R.color.text_secondary }
+            }
+            b.dev.background = ContextCompat.getDrawable(ctx, chipBg)
+            b.dev.setTextColor(ContextCompat.getColor(ctx, chipColor))
             val watched = store.isWatched(p.name)
             b.watch.setOnCheckedChangeListener(null)
             b.watch.isChecked = watched
@@ -151,20 +151,37 @@ class MainActivity : AppCompatActivity() {
     private fun updateMonitorUi() {
         binding.btnStart.isEnabled = !store.monitoring
         binding.btnStop.isEnabled = store.monitoring
+        val dot = if (store.monitoring) R.drawable.bg_dot_on else R.drawable.bg_dot
+        binding.liveText.setCompoundDrawablesRelativeWithIntrinsicBounds(dot, 0, 0, 0)
+        binding.liveText.text = if (store.monitoring) "监控中 · 每 ${store.pollSeconds}s" else "已停止"
     }
 
     private fun showCurrentHour() {
         val h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val m = hourlyModel.firstOrNull { it.hour == h }
-        binding.hourInfo.text = if (m != null) {
-            val zone = when {
-                m.meanDev <= -0.03 -> "低价区（适合买入）"
-                m.meanDev >= 0.06 -> "高价区（适合卖出）"
-                else -> "正常区"
+        if (m != null) {
+            val zone: String
+            val tag: String
+            val tagColor: Int
+            val tagBg: Int
+            when {
+                m.meanDev <= -0.03 -> {
+                    zone = "低价区（适合买入）"; tag = "低价区"; tagColor = R.color.buy; tagBg = R.drawable.bg_chip_buy
+                }
+                m.meanDev >= 0.06 -> {
+                    zone = "高价区（适合卖出）"; tag = "高价区"; tagColor = R.color.sell; tagBg = R.drawable.bg_chip_sell
+                }
+                else -> {
+                    zone = "正常区"; tag = "正常区"; tagColor = R.color.text_secondary; tagBg = R.drawable.bg_chip_normal
+                }
             }
-            "当前 ${"%02d:00".format(h)} · 相对均值 ${"%.1f%%".format(m.meanDev * 100)} · $zone（30 天规律）"
+            binding.hourInfo.text = "现在 ${"%02d:00".format(h)} · 相对均值 ${"%.1f%%".format(m.meanDev * 100)} · $zone（30 天规律）"
+            binding.hourTag.text = tag
+            binding.hourTag.background = ContextCompat.getDrawable(this, tagBg)
+            binding.hourTag.setTextColor(ContextCompat.getColor(this, tagColor))
         } else {
-            "当前 ${"%02d:00".format(h)} · 无模型数据"
+            binding.hourInfo.text = "当前 ${"%02d:00".format(h)} · 无模型数据"
+            binding.hourTag.text = "无数据"
         }
     }
 

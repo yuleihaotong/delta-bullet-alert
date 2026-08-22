@@ -2,165 +2,465 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/hourInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="尚未刷新"
-            android:textSize="13sp" />
-
+        <!-- ============ 头部 ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_header_gradient"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp">
 
-            <Button
-                android:id="@+id/btnRefresh"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_brand_icon"
+                        android:contentDescription="@string/app_name"
+                        android:padding="9dp"
+                        android:src="@drawable/ic_bullet_call" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ibm_plex_sans_bold"
+                            android:text="@string/app_name"
+                            android:textColor="@color/text_primary"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Developer: devlan"
+                            android:textColor="@color/gold"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/liveText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_live_pill"
+                    android:drawableStart="@drawable/bg_dot"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="已停止"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="行情源 moligod.com · 尚未刷新"
+                android:textColor="@color/faint"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- ============ 时段卡片 ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="14dp">
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="刷新行情" />
+                android:background="@drawable/bg_card"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_bar_buy" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="最佳买入时段"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ibm_plex_sans_bold"
+                        android:text="07:00"
+                        android:textColor="@color/buy"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="低于日均约 4%"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_bar_sell" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="最佳卖出时段"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ibm_plex_sans_bold"
+                        android:text="16:00"
+                        android:textColor="@color/sell"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="高于日均约 5%"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============ 当前时段 ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_soft"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/hourInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="加载模型…"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/hourTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ibm_plex_sans_semibold"
+                android:text="正常区"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- ============ 操作按钮 ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="14dp">
+
+            <Button
+                android:id="@+id/btnRefresh"
+                style="@style/Widget.Delta.Button.Ghost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="刷新" />
 
             <Button
                 android:id="@+id/btnStart"
+                style="@style/Widget.Delta.Button.Primary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="开始监控" />
 
             <Button
                 android:id="@+id/btnStop"
+                style="@style/Widget.Delta.Button.Danger"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="停止" />
 
             <Button
                 android:id="@+id/btnTest"
+                style="@style/Widget.Delta.Button.Ghost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="测试提醒" />
         </LinearLayout>
 
+        <!-- ============ 自选子弹 ============ -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="自选子弹（勾选监控）："
-            android:textStyle="bold" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/ibm_plex_sans_semibold"
+            android:text="自选子弹"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
 
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="360dp" />
+            android:layout_height="330dp"
+            android:layout_marginTop="8dp"
+            android:divider="@null"
+            android:paddingHorizontal="16dp" />
 
+        <!-- ============ 设置 ============ -->
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/ibm_plex_sans_semibold"
+            android:text="提醒设置"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="设置"
-            android:textStyle="bold" />
+            android:layout_margin="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="14dp">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TableRow>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="买入提醒时段(时)" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="买入提醒时段（时）"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <EditText
                     android:id="@+id/etBuyHour"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:fontFamily="@font/ibm_plex_sans_semibold"
+                    android:gravity="center"
+                    android:hint="7"
                     android:inputType="number"
-                    android:hint="7" />
-            </TableRow>
+                    android:paddingVertical="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TableRow>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="卖出提醒时段(时)" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="卖出提醒时段（时）"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <EditText
                     android:id="@+id/etSellHour"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:fontFamily="@font/ibm_plex_sans_semibold"
+                    android:gravity="center"
+                    android:hint="16"
                     android:inputType="number"
-                    android:hint="16" />
-            </TableRow>
+                    android:paddingVertical="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TableRow>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="买入触发偏离% (≤)" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="买入触发偏离（≤ %）"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <EditText
                     android:id="@+id/etBuyDev"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:fontFamily="@font/ibm_plex_sans_semibold"
+                    android:gravity="center"
+                    android:hint="-3"
                     android:inputType="numberDecimal|numberSigned"
-                    android:hint="-3" />
-            </TableRow>
+                    android:paddingVertical="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TableRow>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="卖出触发偏离% (≥)" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="卖出触发偏离（≥ %）"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <EditText
                     android:id="@+id/etSellDev"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:fontFamily="@font/ibm_plex_sans_semibold"
+                    android:gravity="center"
+                    android:hint="6"
                     android:inputType="numberDecimal|numberSigned"
-                    android:hint="6" />
-            </TableRow>
+                    android:paddingVertical="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TableRow>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="轮询间隔(秒)" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="轮询间隔（秒）"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <EditText
                     android:id="@+id/etPoll"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:fontFamily="@font/ibm_plex_sans_semibold"
+                    android:gravity="center"
+                    android:hint="30"
                     android:inputType="number"
-                    android:hint="30" />
-            </TableRow>
-        </TableLayout>
+                    android:paddingVertical="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="保存设置" />
+            <Button
+                android:id="@+id/btnSave"
+                style="@style/Widget.Delta.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="保存设置" />
+        </LinearLayout>
 
+        <!-- ============ 页脚 ============ -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="提示：Android 14 需在「通知-全屏通知」允许本应用；12+ 允许精确闹钟。提醒到点或价格触发时会全屏响铃（类似 QQ 通话）。"
-            android:textSize="12sp" />
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="30dp"
+            android:paddingTop="6dp"
+            android:text="Developer: devlan · Apache-2.0 开源源码\n打包版闭源 · 仅供学习交流 · 行情数据 moligod.com"
+            android:textColor="@color/faint"
+            android:textSize="11.5sp" />
     </LinearLayout>
 </ScrollView>

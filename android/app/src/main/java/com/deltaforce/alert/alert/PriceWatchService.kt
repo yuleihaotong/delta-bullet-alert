@@ -105,7 +105,8 @@ class PriceWatchService : Service() {
                 RingHelper.fullScreenAlert(
                     this,
                     "${triggered}提醒：${w.name}",
-                    "现价 ${p.price}，偏离 30 天均值 ${"%.1f".format(dev * 100)}%（阈值 ${"%.1f".format(if (triggered == "买入") w.buyDev else w.sellDev)}%）"
+                    "现价 ${p.price}，偏离 30 天均值 ${"%.1f".format(dev * 100)}%（阈值 ${"%.1f".format(if (triggered == "买入") w.buyDev else w.sellDev)}%）",
+                    if (triggered == "买入") "buy" else "sell"
                 )
                 store.updateLastAlertTs(w.name, now)
             }

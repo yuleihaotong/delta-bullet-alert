@@ -44,12 +44,13 @@ object RingHelper {
         return true
     }
 
-    /** 强提醒：全屏来电界面 + 通知栏消息（铃声由 IncomingCallActivity 播放） */
-    fun fullScreenAlert(ctx: Context, title: String, text: String) {
+    /** 强提醒：全屏来电界面 + 通知栏消息（铃声由 IncomingCallActivity 播放）。type: "buy" | "sell" */
+    fun fullScreenAlert(ctx: Context, title: String, text: String, type: String = "buy") {
         ensureChannels(ctx)
         val intent = Intent(ctx, IncomingCallActivity::class.java).apply {
             putExtra(EXTRA_TITLE, title)
             putExtra(EXTRA_TEXT, text)
+            putExtra(EXTRA_TYPE, type)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pi = PendingIntent.getActivity(
@@ -72,6 +73,7 @@ object RingHelper {
                 Intent(ctx, IncomingCallActivity::class.java).apply {
                     putExtra(EXTRA_TITLE, title)
                     putExtra(EXTRA_TEXT, text)
+                    putExtra(EXTRA_TYPE, type)
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
@@ -101,4 +103,5 @@ object RingHelper {
 
     const val EXTRA_TITLE = "extra_title"
     const val EXTRA_TEXT = "extra_text"
+    const val EXTRA_TYPE = "extra_type"
 }

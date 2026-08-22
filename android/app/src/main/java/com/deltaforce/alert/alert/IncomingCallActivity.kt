@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.deltaforce.alert.R
 import com.deltaforce.alert.databinding.ActivityCallBinding
 
@@ -38,7 +39,11 @@ class IncomingCallActivity : AppCompatActivity() {
 
         val title = intent.getStringExtra(RingHelper.EXTRA_TITLE) ?: "交易提醒"
         val text = intent.getStringExtra(RingHelper.EXTRA_TEXT) ?: ""
+        val type = intent.getStringExtra(RingHelper.EXTRA_TYPE) ?: "buy"
         binding.callTitle.text = title
+        binding.callTitle.setTextColor(
+            ContextCompat.getColor(this, if (type == "sell") R.color.sell else R.color.buy)
+        )
         binding.callDetail.text = text
 
         binding.btnAnswer.setOnClickListener { dismiss("已接听") }
