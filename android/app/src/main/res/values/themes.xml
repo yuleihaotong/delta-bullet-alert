@@ -2,11 +2,9 @@
 <resources>
     <style name="Theme.DeltaBulletAlert" parent="Theme.MaterialComponents.DayNight.DarkActionBar" />
 
-    <!-- QQ 通话式全屏来电界面主题 -->
+    <!-- QQ 通话式全屏来电界面主题（锁屏亮屏由 Manifest 的 showWhenLocked/turnScreenOn 提供） -->
     <style name="Theme.DeltaBulletAlert.Call" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowShowWhenLocked">true</item>
-        <item name="android:windowTurnScreenOn">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">#101418</item>
     </style>

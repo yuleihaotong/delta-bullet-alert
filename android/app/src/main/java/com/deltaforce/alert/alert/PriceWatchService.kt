@@ -104,7 +104,7 @@ class PriceWatchService : Service() {
             if (triggered != null && now - w.lastAlertTs > cooldown) {
                 RingHelper.fullScreenAlert(
                     this,
-                    "$triggered提醒：${w.name}",
+                    "${triggered}提醒：${w.name}",
                     "现价 ${p.price}，偏离 30 天均值 ${"%.1f".format(dev * 100)}%（阈值 ${"%.1f".format(if (triggered == "买入") w.buyDev else w.sellDev)}%）"
                 )
                 store.updateLastAlertTs(w.name, now)
