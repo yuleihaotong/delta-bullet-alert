@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONObject
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener { saveSettings(); Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show() }
 
         setupThemeSpinner()
+        ensureRefMeans()
         loadSettings()
         updateMonitorUi()
         showCurrentHour()
@@ -264,6 +266,21 @@ class MainActivity : AppCompatActivity() {
         } catch (_: Exception) {
             emptyList()
         }
+    }
+
+    /** 从内置资产加载 55 种子弹的 30 天参考均值（离线可显示偏离%） */
+    private fun loadRefMeansAsset(): Map<String, Double> {
+        return try {
+            val json = assets.open("ref_means.json").bufferedReader().use { it.readText() }
+            val o = JSONObject(json)
+            o.keys().asSequence().associateWith { o.optDouble(it) }
+        } catch (_: Exception) {
+            emptyMap()
+        }
+    }
+
+    private fun ensureRefMeans() {
+        store.ensureRefMeansFromBundle(loadRefMeansAsset())
     }
 
     private fun ensurePermissions() {

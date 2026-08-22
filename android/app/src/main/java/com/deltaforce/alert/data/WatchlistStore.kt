@@ -127,6 +127,17 @@ class WatchlistStore private constructor(ctx: Context) {
         get() = sp.getLong("ref_update_ts", 0L)
         set(v) = sp.edit().putLong("ref_update_ts", v).apply()
 
+    /** 若参考均值缺失或过期（>7 天），用内置资产数据填充（离线也能显示偏离%） */
+    fun ensureRefMeansFromBundle(map: Map<String, Double>, maxAgeMs: Long = 7L * 24 * 3600_000L) {
+        val now = System.currentTimeMillis()
+        val refs = getRefMeans()
+        val stale = now - lastRefUpdateTs > maxAgeMs
+        if ((refs.isEmpty() || stale) && map.isNotEmpty()) {
+            setRefMeans(map)
+            lastRefUpdateTs = now
+        }
+    }
+
     // ---------------- 上次行情缓存（离线展示用） ----------------
     fun cachePrices(list: List<BulletPrice>) {
         val arr = JSONArray()
