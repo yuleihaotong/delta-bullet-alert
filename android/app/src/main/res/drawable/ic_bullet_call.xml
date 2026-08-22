@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 弹头 -->
+    <path
+        android:fillColor="#EBC97A"
+        android:pathData="M9.5,2.5 L14.5,2.5 L14.5,8 Q14.5,9 13.5,9 L10.5,9 Q9.5,9 9.5,8 Z" />
+    <!-- 弹壳 -->
+    <path
+        android:fillColor="#D4A94E"
+        android:pathData="M9,9 L15,9 L15,17.5 Q15,20 12.5,20.5 L11.5,20.5 Q9,20 9,17.5 Z" />
+    <!-- 弹壳底缘 -->
+    <path
+        android:fillColor="#B8892F"
+        android:pathData="M9,17.5 Q9,20 11.5,20.5 L12.5,20.5 Q15,20 15,17.5 L14.2,17.5 Q14.2,19.2 12.5,19.6 L11.5,19.6 Q9.8,19.2 9.8,17.5 Z" />
+    <!-- 弹头与弹壳交界线 -->
+    <path
+        android:fillColor="#8C6F2F"
+        android:pathData="M9.5,8 L14.5,8 L14.5,9 L9.5,9 Z" />
+</vector>

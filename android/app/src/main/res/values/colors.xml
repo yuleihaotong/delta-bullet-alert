@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#1B3A5C</color>
+    <!-- 应用图标背景 -->
+    <color name="ic_launcher_background">#0F172A</color>
+
+    <!-- ============ 高级感深色主题：深海军蓝 + 高级金 ============ -->
+    <color name="bg">#0B1220</color>
+    <color name="bg_deep">#070D18</color>
+    <color name="card">#131F36</color>
+    <color name="card_border">#243353</color>
+    <color name="card_soft">#101A2E</color>
+
+    <color name="gold">#D4A94E</color>
+    <color name="gold_bright">#EBC97A</color>
+    <color name="gold_dim">#8C6F2F</color>
+
+    <color name="text_primary">#F1F5F9</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_faint">#5B6B85</color>
+
+    <!-- 状态色：买入/低点=绿，卖出/高点=橙，正常=灰蓝 -->
+    <color name="buy">#34D399</color>
+    <color name="buy_bg">#0D2B21</color>
+    <color name="sell">#FB923C</color>
+    <color name="sell_bg">#30190A</color>
+    <color name="normal">#94A3B8</color>
+    <color name="normal_bg">#1A2740</color>
+
+    <color name="cyan">#38BDF8</color>
+    <color name="danger">#F87171</color>
+    <color name="danger_bg">#331419</color>
 </resources>
