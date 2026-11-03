@@ -2,20 +2,23 @@ package com.deltaforce.alert.alert
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.deltaforce.alert.R
 import com.deltaforce.alert.attrColor
 import com.deltaforce.alert.databinding.ActivityCallBinding
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /** QQ 通话式强提醒界面：全屏 + 循环响铃 + 震动 + 接听/挂断。 */
 class IncomingCallActivity : AppCompatActivity() {
@@ -23,6 +26,12 @@ class IncomingCallActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCallBinding
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
+    private var audioManager: AudioManager? = null
+    private var focusRequest: AudioFocusRequest? = null
+    private val ringExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+
+    @Volatile
+    private var dismissed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,27 +63,77 @@ class IncomingCallActivity : AppCompatActivity() {
 
         binding.btnAnswer.setOnClickListener { dismiss("已接听") }
         binding.btnDecline.setOnClickListener { dismiss("已忽略") }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = dismiss("已忽略")
+        })
 
         startRinging()
     }
 
-    private fun startRinging() {
+    private fun ringtoneUri(): Uri? =
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+    private fun requestFocus() {
         try {
-            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-            player = MediaPlayer().apply {
-                setAudioAttributes(
+            val am = getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
+            audioManager = am
+            val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                .setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build()
                 )
-                setDataSource(this@IncomingCallActivity, uri)
-                isLooping = true
-                prepare()
-                start()
+                .setWillPauseWhenDucked(false)
+                .build()
+            focusRequest = req
+            am.requestAudioFocus(req)
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun startRinging() {
+        requestFocus()
+        startVibrating()
+        val uri = ringtoneUri() ?: return
+        // setDataSource/prepare 会读系统铃声，别放主线程（网络/大文件铃声会 ANR）
+        try {
+            ringExecutor.execute {
+                val built = try {
+                    MediaPlayer().apply {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_ALARM)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                .build()
+                        )
+                        setDataSource(this@IncomingCallActivity, uri)
+                        isLooping = true
+                        prepare()
+                    }
+                } catch (_: Exception) {
+                    null
+                }
+                runOnUiThread {
+                    if (built == null) return@runOnUiThread
+                    if (dismissed) {
+                        built.release()
+                        return@runOnUiThread
+                    }
+                    player = built
+                    try {
+                        built.start()
+                    } catch (_: Exception) {
+                    }
+                }
             }
         } catch (_: Exception) {
         }
+    }
+
+    private fun startVibrating() {
         try {
             vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
             if (Build.VERSION.SDK_INT >= 26) {
@@ -92,6 +151,7 @@ class IncomingCallActivity : AppCompatActivity() {
     }
 
     private fun dismiss(reason: String) {
+        dismissed = true
         stopRinging()
         RingHelper.notifyPlain(this, "提醒已处理", reason)
         finishAndRemoveTask()
@@ -108,14 +168,17 @@ class IncomingCallActivity : AppCompatActivity() {
             vibrator?.cancel()
         } catch (_: Exception) {
         }
+        try {
+            focusRequest?.let { audioManager?.abandonAudioFocusRequest(it) }
+        } catch (_: Exception) {
+        }
+        focusRequest = null
     }
 
     override fun onDestroy() {
+        dismissed = true
         super.onDestroy()
         stopRinging()
-    }
-
-    override fun onBackPressed() {
-        dismiss("已忽略")
+        ringExecutor.shutdownNow()
     }
 }

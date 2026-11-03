@@ -32,7 +32,8 @@ class WatchlistStore private constructor(ctx: Context) {
         set(v) = sp.edit().putInt("sell_minute", v).apply()
     var pollSeconds: Int
         get() = sp.getInt("poll_sec", 30)
-        set(v) = sp.edit().putInt("poll_sec", v.coerceIn(15, 600)).apply()
+        // 下限 30s：接口有防爬，15s 一刷不合「低频礼貌调用」
+        set(v) = sp.edit().putInt("poll_sec", v.coerceIn(30, 600)).apply()
     var buyDevInput: Double
         get() = sp.getFloat("buy_dev", -3.0f).toDouble()
         set(v) = sp.edit().putFloat("buy_dev", v.toFloat()).apply()
@@ -135,6 +136,17 @@ class WatchlistStore private constructor(ctx: Context) {
     var lastRefUpdateTs: Long
         get() = sp.getLong("ref_update_ts", 0L)
         set(v) = sp.edit().putLong("ref_update_ts", v).apply()
+
+    // ---------------- 行情拉取健康度（界面展示用） ----------------
+    /** 最近一次成功拉到实时价的时间；0 = 从未成功 */
+    var lastFetchOkTs: Long
+        get() = sp.getLong("last_fetch_ok_ts", 0L)
+        set(v) = sp.edit().putLong("last_fetch_ok_ts", v).apply()
+
+    /** 最近一次失败原因；空串 = 正常 */
+    var lastFetchError: String
+        get() = sp.getString("last_fetch_error", "") ?: ""
+        set(v) = sp.edit().putString("last_fetch_error", v).apply()
 
     /** 若参考均值缺失或过期（>7 天），用内置资产数据填充（离线也能显示偏离%） */
     fun ensureRefMeansFromBundle(map: Map<String, Double>, maxAgeMs: Long = 7L * 24 * 3600_000L) {

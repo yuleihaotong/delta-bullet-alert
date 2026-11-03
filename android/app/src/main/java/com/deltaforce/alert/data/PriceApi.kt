@@ -9,6 +9,7 @@ import java.util.zip.GZIPInputStream
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.math.roundToInt
 
 /**
  * moligod.com 行情接口客户端。
@@ -80,7 +81,8 @@ object PriceApi {
                                 BulletPrice(
                                     objectId = o.optString("object_id"),
                                     name = o.optString("name"),
-                                    price = o.optInt("price"),
+                                    // 容忍小数价格，避免被 optInt 截断
+                                    price = o.optDouble("price", 0.0).roundToInt(),
                                     updatedAtMs = o.optLong("updated_at_ms", 0L),
                                 )
                             )
@@ -89,7 +91,7 @@ object PriceApi {
                 }
                 429 -> {
                     attempt++
-                    Thread.sleep(backoff)
+                    Thread.sleep(retryDelayMs(headers, backoff))
                     backoff *= 2
                 }
                 else -> throw IllegalStateException("HTTP $code")
@@ -104,7 +106,7 @@ object PriceApi {
         var backoff = 1_000L
         var attempt = 0
         while (attempt < 3) {
-            val (code, _, body) = httpGet(url)
+            val (code, headers, body) = httpGet(url)
             when (code) {
                 in 200..299 -> {
                     val json = JSONObject(String(body, Charsets.UTF_8))
@@ -117,12 +119,18 @@ object PriceApi {
                 }
                 429 -> {
                     attempt++
-                    Thread.sleep(backoff)
+                    Thread.sleep(retryDelayMs(headers, backoff))
                     backoff *= 2
                 }
                 else -> throw IllegalStateException("HTTP $code")
             }
         }
         throw IllegalStateException("rate limited")
+    }
+
+    /** 服务端给了 Retry-After 就听它的，否则退回指数退避 */
+    private fun retryDelayMs(headers: Map<String, String>, backoff: Long): Long {
+        val secs = headers["retry-after"]?.trim()?.toLongOrNull() ?: return backoff
+        return maxOf(backoff, secs * 1000L)
     }
 }

@@ -10,6 +10,8 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
@@ -52,6 +54,13 @@ class MainActivity : AppCompatActivity() {
     private val hourlyModel: List<HourModel> by lazy { loadHourlyModel() }
     private val gradeMap: Map<String, Int> by lazy { loadGradeMap() }
     private val collapsedGroups = mutableSetOf<String>()
+    private val freshHandler = Handler(Looper.getMainLooper())
+    private val freshTick = object : Runnable {
+        override fun run() {
+            updateMonitorUi()
+            freshHandler.postDelayed(this, 30_000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -290,6 +299,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
         updateMonitorUi()
+        freshHandler.removeCallbacks(freshTick)
+        freshHandler.post(freshTick)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        freshHandler.removeCallbacks(freshTick)
     }
 
     private fun updateStatusFromCache(prices: List<BulletPrice>) {
@@ -360,7 +376,17 @@ class MainActivity : AppCompatActivity() {
         )
         val dot = if (mon) R.drawable.bg_dot_on else R.drawable.bg_dot
         binding.liveText.setCompoundDrawablesRelativeWithIntrinsicBounds(dot, 0, 0, 0)
-        binding.liveText.text = if (mon) "监控中 · 每 ${store.pollSeconds}s" else "已停止"
+        binding.liveText.text = if (mon) "监控中 · 每 ${store.pollSeconds}s${fetchHealthSuffix()}" else "已停止"
+    }
+
+    /** 行情健康度：让「拉不到数据」可见，否则和「没触发」看起来一样 */
+    private fun fetchHealthSuffix(): String {
+        val err = store.lastFetchError
+        if (err.isNotEmpty()) return " · 拉取失败：${err.take(20)}"
+        val ts = store.lastFetchOkTs
+        if (ts <= 0L) return " · 等待首次行情"
+        val minutes = (System.currentTimeMillis() - ts) / 60_000L
+        return if (minutes < 1) " · 行情刚刚更新" else " · 行情 ${minutes} 分钟前"
     }
 
     private fun showCurrentHour() {

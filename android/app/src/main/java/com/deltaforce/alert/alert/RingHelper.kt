@@ -16,6 +16,7 @@ object RingHelper {
     const val CHANNEL_SERVICE = "service_channel"
     const val NOTIF_ALERT = 1001
     const val NOTIF_SERVICE = 1002
+    const val NOTIF_PLAIN = 1003
 
     fun ensureChannels(ctx: Context) {
         val nm = ctx.getSystemService(NotificationManager::class.java)
@@ -96,7 +97,8 @@ object RingHelper {
             .setAutoCancel(true)
             .build()
         try {
-            NotificationManagerCompat.from(ctx).notify(NOTIF_ALERT, notif)
+            // 用独立的 id：否则「已处理」的普通通知会覆盖掉正在响的那条强提醒
+            NotificationManagerCompat.from(ctx).notify(NOTIF_PLAIN, notif)
         } catch (_: SecurityException) {
         }
     }

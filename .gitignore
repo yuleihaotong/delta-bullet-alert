@@ -19,7 +19,9 @@ venv/
 
 # 行情原始数据缓存（可随时用 tools/fetch_history.py 重新拉取）
 data/history/*.json
-!data/history/_sample.json
+
+# 自检脚本的临时工作目录
+.selftest-tmp/
 
 # 系统/编辑器
 .DS_Store
