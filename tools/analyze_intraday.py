@@ -250,7 +250,7 @@ def main(argv=None):
     L.append("")
     L.append("### 2.1 统计稳健性（按「日」聚类）")
     L.append("")
-    L.append(f"- 有效样本 ≈ **{len(days)} 个交易日**：55 颗子弹同一天的价格高度相关，"
+    L.append(f"- 有效样本 ≈ **{len(days)} 个交易日**：{len(series)} 颗子弹同一天的价格高度相关，"
              f"上面 {len(consistency)} 个「子弹×日」不能当独立样本看。")
     if boot:
         L.append(f"- 按日 bootstrap（n={args.bootstrap}, seed={args.seed}）：买卖价差 95% 置信区间 "
