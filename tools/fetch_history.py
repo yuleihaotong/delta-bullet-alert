@@ -13,6 +13,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -70,6 +71,11 @@ def fetch_current_prices():
     return json.loads(gzip.decompress(pt).decode())
 
 
+def safe_filename(name):
+    """Windows 不允许 < > : " / \\ | ? * 出现在文件名里（如 '.357 Magnum 9号霰射"鼠弹"'）。"""
+    return re.sub(r'[<>:"/\\|?*]', "_", name)
+
+
 def fetch_history(name, limit=720, interval="1h"):
     url = (f"{API}/history?name=" + urllib.parse.quote(name, safe="")
            + f"&interval={interval}&limit={limit}&lookup=name")
@@ -97,7 +103,7 @@ def main(argv=None):
     ok, fail = 0, []
     for idx, it in enumerate(items):
         name = it["name"]
-        fp = os.path.join(out, f"{idx:02d}_{name.replace('/', '_')}.json")
+        fp = os.path.join(out, f"{idx:02d}_{safe_filename(name)}.json")
         if os.path.exists(fp):
             ok += 1
             print(f"[{idx + 1}/{len(items)}] cached: {name}", flush=True)
