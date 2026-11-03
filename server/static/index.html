@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1620">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>三角洲子弹提醒</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<style>
+  :root{--bg:#0f1620;--card:#18212e;--card2:#1e2937;--line:#293546;--text:#e6edf6;
+        --dim:#8b9bb0;--buy:#35d39a;--sell:#ff7a6b;--accent:#4d9dff;--warn:#ffc857}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+       padding:env(safe-area-inset-top) 0 calc(16px + env(safe-area-inset-bottom))}
+  .wrap{max-width:720px;margin:0 auto;padding:0 14px}
+  header{padding:18px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  h1{font-size:19px;margin:0;letter-spacing:.5px}
+  .pill{font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+  .pill.on{color:var(--buy);border-color:#1f4d3d;background:#12251d}
+  .pill.err{color:var(--sell);border-color:#5a2b28;background:#2a1615}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .card h2{font-size:13px;color:var(--dim);margin:0 0 10px;font-weight:600;letter-spacing:.5px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:0}
+  .name{font-weight:600}
+  .meta{font-size:12px;color:var(--dim);margin-top:2px}
+  .dev{font-variant-numeric:tabular-nums;font-weight:700;padding:2px 8px;border-radius:8px;font-size:12px}
+  .dev.buy{color:var(--buy);background:#12251d}
+  .dev.sell{color:var(--sell);background:#2a1615}
+  .dev.flat{color:var(--dim);background:var(--card2)}
+  input,select,button{font:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);
+       border-radius:10px;padding:8px 10px;outline:none}
+  input:focus,select:focus{border-color:var(--accent)}
+  button{cursor:pointer}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#06101f;font-weight:700}
+  button.ghost{background:transparent}
+  button.danger{background:transparent;border-color:#5a2b28;color:var(--sell);padding:4px 9px;font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  label.field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dim)}
+  .hint{font-size:12px;color:var(--dim);margin-top:8px}
+  .alerts li{font-size:12.5px;color:var(--dim);padding:4px 0;list-style:none}
+  ul{margin:0;padding:0}
+  .ok{color:var(--buy)}
+  .empty{color:var(--dim);font-size:13px;padding:8px 0}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:#243044;border:1px solid var(--line);
+       padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>三角洲子弹提醒</h1>
+    <span class="pill" id="health">读取中…</span>
+    <span class="pill" id="pushState"></span>
+  </header>
+
+  <div class="card">
+    <h2>我的自选</h2>
+    <div id="watchList"><div class="empty">还没有自选，下面加一个</div></div>
+  </div>
+
+  <div class="card">
+    <h2>添加自选</h2>
+    <div class="row">
+      <input id="search" placeholder="搜子弹（如 556 / m855 / 9x39）" style="flex:1;min-width:180px">
+      <button class="ghost" id="reload">刷新行情</button>
+    </div>
+    <div id="candidates" style="margin-top:10px;max-height:260px;overflow:auto"></div>
+  </div>
+
+  <div class="card">
+    <h2>提醒设置</h2>
+    <div class="grid">
+      <label class="field">买入阈值（≤ %）<input id="buyDev" type="number" step="0.5" value="-3"></label>
+      <label class="field">卖出阈值（≥ %）<input id="sellDev" type="number" step="0.5" value="6"></label>
+      <label class="field">买入时段（时）<input id="buyHour" type="number" min="0" max="23" value="7"></label>
+      <label class="field">卖出时段（时）<input id="sellHour" type="number" min="0" max="23" value="20"></label>
+      <label class="field">轮询间隔（秒）<input id="poll" type="number" min="30" max="600" value="60"></label>
+      <label class="field">冷却（分钟）<input id="cooldown" type="number" min="1" max="1440" value="30"></label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="saveSettings">保存设置</button>
+      <label class="row" style="gap:6px;font-size:12px;color:var(--dim)">
+        <input type="checkbox" id="windowEnabled" style="width:auto"> 时段提醒
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>推送（iOS 用 Bark）</h2>
+    <label class="field">Bark device key<input id="barkKey" placeholder="App 里那串 key，留空表示不改"></label>
+    <div class="hint">iPhone 装 Bark → 复制 key → 填这里。不需要 Apple 开发者账号。</div>
+    <div class="row" style="margin-top:10px">
+      <label class="field" style="flex:1;min-width:200px">或：webhook（企微/钉钉/自定义）
+        <input id="webhookUrl" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=...  留空表示不改">
+      </label>
+      <label class="field">格式
+        <select id="webhookFormat">
+          <option value="json">通用 JSON</option>
+          <option value="wecom">企业微信机器人</option>
+          <option value="dingtalk">钉钉机器人</option>
+        </select>
+      </label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="savePush">保存推送</button>
+      <button class="ghost" id="testPush">发一条测试</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>最近提醒</h2>
+    <ul class="alerts" id="alerts"><li class="empty">暂无</li></ul>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const qs = new URLSearchParams(location.search);
+if (qs.get('token')) localStorage.setItem('token', qs.get('token'));
+const TOKEN = localStorage.getItem('token') || '';
+let state = null;
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+async function api(path, opts = {}) {
+  const r = await fetch(path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}) },
+  });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || ('HTTP ' + r.status));
+  return r.json();
+}
+const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body || {}) });
+
+function fmtTime(ts) {
+  if (!ts) return '--';
+  const d = new Date(ts * 1000);
+  return d.toLocaleString('zh-CN', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+function render() {
+  if (!state) return;
+  const st = state.status || {};
+  const health = document.getElementById('health');
+  if (st.last_error) {
+    health.className = 'pill err';
+    health.textContent = '拉取失败：' + String(st.last_error).slice(0, 24);
+  } else if (st.last_ok_ts) {
+    const mins = Math.max(0, Math.round((state.server_now - st.last_ok_ts) / 60));
+    health.className = 'pill on';
+    health.textContent = mins < 1 ? '行情刚刚更新' : `行情 ${mins} 分钟前`;
+  } else {
+    health.className = 'pill'; health.textContent = '等待首次行情';
+  }
+  const s = state.settings;
+  const push = document.getElementById('pushState');
+  push.className = 'pill' + (s.bark_key_set || s.webhook_set || s.telegram_set ? ' on' : '');
+  push.textContent = s.bark_key_set ? 'Bark 已配置' : (s.webhook_set ? 'Webhook 已配置' : '未配置推送');
+
+  document.getElementById('buyDev').value = s.buy_dev;
+  document.getElementById('sellDev').value = s.sell_dev;
+  document.getElementById('buyHour').value = s.buy_hour;
+  document.getElementById('sellHour').value = s.sell_hour;
+  document.getElementById('poll').value = s.poll_seconds;
+  document.getElementById('cooldown').value = s.cooldown_minutes;
+  document.getElementById('windowEnabled').checked = !!s.window_enabled;
+  document.getElementById('webhookFormat').value = s.webhook_format || 'json';
+
+  const list = document.getElementById('watchList');
+  if (!state.watch.length) {
+    list.innerHTML = '<div class="empty">还没有自选，下面加一个</div>';
+  } else {
+    list.innerHTML = state.watch.map(w => {
+      const dev = w.deviation;
+      const cls = dev == null ? 'flat' : (dev <= w.buy_dev ? 'buy' : (dev >= w.sell_dev ? 'sell' : 'flat'));
+      const devTxt = dev == null ? '--' : (dev >= 0 ? '+' : '') + dev.toFixed(1) + '%';
+      return `<div class="item">
+        <div><div class="name">${w.name}</div>
+          <div class="meta">现价 ${w.price || '--'} · 均值 ${w.ref ? w.ref.toFixed(0) : '--'} · 阈值 ${w.buy_dev}% / ${w.sell_dev}%</div></div>
+        <div class="row" style="gap:8px">
+          <span class="dev ${cls}">${devTxt}</span>
+          <button class="danger" data-unwatch="${w.name}">移除</button>
+        </div></div>`;
+    }).join('');
+    list.querySelectorAll('[data-unwatch]').forEach(b => b.onclick = async () => {
+      await post('/api/unwatch', { name: b.dataset.unwatch });
+      toast('已移除'); refresh();
+    });
+  }
+
+  const watchNames = new Set(state.watch.map(w => w.name));
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const cands = state.prices
+    .filter(p => !watchNames.has(p.name) && (!q || p.name.toLowerCase().includes(q)))
+    .sort((a, b) => b.price - a.price).slice(0, 40);
+  document.getElementById('candidates').innerHTML = cands.length ? cands.map(p => `
+    <div class="item"><div><div class="name">${p.name}</div>
+      <div class="meta">${p.price}</div></div>
+      <button class="ghost" data-add="${p.name}">+ 自选</button></div>`).join('')
+    : '<div class="empty">没有匹配的子弹</div>';
+  document.querySelectorAll('[data-add]').forEach(b => b.onclick = async () => {
+    await post('/api/watch', { name: b.dataset.add });
+    toast('已加入自选'); refresh();
+  });
+
+  const ul = document.getElementById('alerts');
+  ul.innerHTML = state.alerts.length ? state.alerts.map(a => `
+    <li>${fmtTime(a.ts)} · ${a.name} · ${a.side === 'buy' ? '买入' : '卖出'} ${a.price || ''}
+      <span class="${a.delivered.includes('ok') ? 'ok' : ''}">${a.delivered}</span></li>`).join('')
+    : '<li class="empty">暂无</li>';
+}
+
+async function refresh() {
+  try { state = await api('/api/state'); render(); }
+  catch (e) { toast('读取失败：' + e.message); }
+}
+
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('reload').onclick = async () => {
+  await post('/api/tick', {}); toast('已刷新'); refresh();
+};
+document.getElementById('saveSettings').onclick = async () => {
+  await post('/api/settings', {
+    buy_dev: parseFloat(document.getElementById('buyDev').value),
+    sell_dev: parseFloat(document.getElementById('sellDev').value),
+    buy_hour: parseInt(document.getElementById('buyHour').value, 10),
+    sell_hour: parseInt(document.getElementById('sellHour').value, 10),
+    poll_seconds: parseInt(document.getElementById('poll').value, 10),
+    cooldown_minutes: parseInt(document.getElementById('cooldown').value, 10),
+    window_enabled: document.getElementById('windowEnabled').checked,
+  });
+  toast('已保存'); refresh();
+};
+document.getElementById('savePush').onclick = async () => {
+  const body = { webhook_format: document.getElementById('webhookFormat').value };
+  const bark = document.getElementById('barkKey').value.trim().replace(/^https?:\/\/[^/]+\//, '');
+  const hook = document.getElementById('webhookUrl').value.trim();
+  if (bark) body.bark_key = bark;
+  if (hook) body.webhook_url = hook;
+  await post('/api/settings', body);
+  document.getElementById('barkKey').value = '';
+  document.getElementById('webhookUrl').value = '';
+  toast('已保存推送配置'); refresh();
+};
+document.getElementById('testPush').onclick = async () => {
+  const r = await post('/api/test', {});
+  toast('推送结果：' + r.delivered);
+};
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

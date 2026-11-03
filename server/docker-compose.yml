@@ -1,0 +1,12 @@
+services:
+  watcher:
+    build: .
+    container_name: delta-watcher
+    restart: unless-stopped
+    ports:
+      - "8710:8710"
+    environment:
+      # 对外开放时一定要设，否则任何访问到端口的人都能改你的推送配置
+      WATCHER_TOKEN: "${WATCHER_TOKEN:-}"
+    volumes:
+      - ./data:/data

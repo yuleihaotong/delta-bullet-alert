@@ -23,6 +23,14 @@ data/history/*.json
 # 自检脚本的临时工作目录
 .selftest-tmp/
 
+# 自托管服务的运行时数据
+server/watcher.db
+server/watcher.db-wal
+server/watcher.db-shm
+server/_smoke.db*
+server/data/
+server/tests/.tmp/
+
 # 系统/编辑器
 .DS_Store
 *.swp

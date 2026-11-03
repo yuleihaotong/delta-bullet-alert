@@ -1,0 +1,18 @@
+{
+  "name": "三角洲子弹提醒",
+  "short_name": "子弹提醒",
+  "description": "三角洲行动交易行子弹价格提醒（自托管）",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1620",
+  "theme_color": "#0f1620",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

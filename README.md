@@ -3,6 +3,7 @@
 《三角洲行动》交易行子弹 **价格预警 / 定时提醒** 工具。
 
 - **Android App（Kotlin）**：到点/触发时发系统通知，并支持 **QQ 通话式强提醒**（全屏来电界面 + 响铃 + 震动，锁屏也响）。
+- **自托管服务（Python）**：给 **iOS / Windows / Linux** 用——一台常开的机器轮询行情，推到 Bark / 企业微信 / 钉钉。见 [`server/`](server/README.md)。
 - **行情分析（Python）**：拉取 30 天逐小时价格，分析日内最佳买卖时段。
 - **数据源**：moligod.com 实时价/历史接口（第三方数据站，非游戏官方）。
 
@@ -35,6 +36,10 @@ delta-bullet-alert/
 │       │   ├── alert/        # 时段闹钟 / 前台监控 / 全屏来电强提醒
 │       │   └── MainActivity.kt   # 自选列表 + 设置
 │       └── test/java/…       # JVM 单测（阈值单位）
+├── server/                   # 自托管服务（Python）+ 网页，给 iOS / Windows / Linux 用
+│   ├── watcher/              # 轮询 / 阈值 / 存储 / 推送（Bark、企微、钉钉）
+│   ├── static/               # 网页（可加到主屏当 PWA）
+│   └── tests/                # 单测（阈值、冷却、时段、失败降级）
 ├── tools/
 │   ├── fetch_history.py      # 拉取全部子弹 30 天历史（Python）
 │   ├── analyze_intraday.py   # 日内买卖时机分析
@@ -68,6 +73,30 @@ gradle test                   # JVM 单测（阈值单位回归，不需要模�
 5. "测试提醒"可预览 QQ 通话式响铃效果。
 
 > 时段和内置模型都按**北京时间**：手机在其他时区时，提醒仍落在北京时间的 07:00 / 16:00。
+
+## 跨平台：iOS / Windows / Linux
+
+Android 那套靠**客户端自己常驻轮询**，iOS 做不到（系统不允许后台常驻，`BGTaskScheduler` 是机会式的，
+可以永远不唤醒你；本地通知能准点响但不会执行代码）。所以换一个方向：
+
+```
+一台常开的机器（PC / NAS / 小 VPS）
+  └─ server/app.py：每 60s 拉一次实时价（全站一次，比每个客户端各拉一次客气得多）
+        ├─ Bark      → iPhone 系统通知（不用开发者账号、不用审核）
+        ├─ 企业微信 / 钉钉机器人 → 全平台
+        └─ 网页（可加到主屏） → 改自选、看偏离、看提醒记录
+```
+
+```bash
+cd server && pip install -r requirements.txt && python app.py
+# 或：WATCHER_TOKEN=xxx docker compose up -d
+```
+
+iPhone 装 Bark、把 key 填进网页，就能收「买入提醒：5.56x45mm M855 现价 391，偏离 -3.4%」这样的通知。
+Windows / Linux 用户跑同一个服务即可，浏览器就是客户端。详见 [`server/README.md`](server/README.md)。
+
+**为什么不做 iOS 原生 App**：能过审的前提是要有开发者账号（$99/年）；而且就算上了架，iOS 也没法后台轮询，
+价格预警照样需要服务端推送——那还不如直接用 Bark，少写一个 App。
 
 ## 数据复现
 
